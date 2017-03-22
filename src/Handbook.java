@@ -1,4 +1,8 @@
 import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.border.EtchedBorder;
+
+import org.jdesktop.swingx.border.DropShadowBorder;
 
 import java.awt.CardLayout;
 import java.awt.Color;
@@ -20,13 +24,14 @@ import net.miginfocom.swing.MigLayout;
 public class Handbook {
 	
 	private JFrame frame = new JFrame();
-	private JPanel mainScreen = new JPanel(); //Maybe I should call this mainScreen?
+	private JPanel mainScreen = new JPanel();
 	
 	private JPanel mainMenu = new JPanel();
 	private JLabel opManualTxt = new JLabel("Operations Manual");
 	private JPanel logo = new CTLogo();
 	private JPanel btnArea = new JPanel();
 	
+	private JPanel newRepDiaBase = new JPanel();
 	private JPanel newRepDia = new JPanel();
 	private JPanel walkinWO = new JPanel();
 	private JPanel workCmpl = new JPanel();
@@ -58,13 +63,23 @@ public class Handbook {
 			workCmplBtn, pickUpDiaBtn, cmpnyWOBtn, cusUpdateBtn, apprDiaBtn, dOSigBtn, cmplRprBtn,
 			repComDiaBtn, pUSigBtn));
 	
-	CardLayout cl = new CardLayout(); //Will use a CardLayout to handle screen changing
+	private CardLayout mainScreenCl = new CardLayout(); //Will use a CardLayout to handle screen changing
+	private CardLayout newRepDiaCl = new CardLayout();
 
 	/**
 	 * Constructor
 	 */
-	public Handbook() {
-
+	public Handbook() {		
+		//Set border for frame (the top level container)
+        DropShadowBorder shadow = new DropShadowBorder();
+        shadow.setShadowColor(Color.BLACK);
+        shadow.setShowLeftShadow(true);
+        shadow.setShowRightShadow(true);
+        shadow.setShowBottomShadow(true);
+        shadow.setShowTopShadow(true);
+        frame.getRootPane().setBorder(shadow);
+        //frame.getRootPane().setBorder(BorderFactory.createMatteBorder(4, 4, 4, 4, Color.RED));        
+        
 		//The following try/catch block is needed so that the GUI's look and feel appears similar 
 		//across different operating systems.
 		try {
@@ -89,60 +104,94 @@ public class Handbook {
 		
 		
 		
+		// !!!!!!!!!!!!!!!!!!!!!!!! FOCUS HERE !!!!!!!!!!!!!!!!!!!!!!!!
+		
 		// === NEW REPAIR DIALOGUE CONFIGURATIONS ===
+		//newRepDiaBase.setBackground(Color.WHITE); 
+		//. newRepDiaBase itself is an empty panel with nothing on it -- it's just here to handle screen changes
+		//. This screen will link to the walk-in work order screen, so I think newRepDiaBase needs to be set with a CardLayout. 
+		//  Another JPanel, which will be set with a MigLayout, will be made that gets added to newRepDiaBase...
+		newRepDiaBase.setLayout(newRepDiaCl);
+		newRepDiaBase.add(newRepDia, "2a");
+		newRepDiaBase.add(walkinWO, "3");
+		
+		newRepDia.setLayout(new MigLayout("", "", "[][]"));
 		newRepDia.setBackground(Color.WHITE);
-		//How will you lay this page out?
+		
+		createHeader("DIALOGUE FOR NEW REPAIR", newRepDia);
+		
+		JTextArea newRepDiaTxt = new JTextArea(); //I should put this on a JScrollPane
+		newRepDia.add(newRepDiaTxt, "push, grow");
+		
+		
+		// !!!!!!!!!!!!!!!!!!!!!!!! FOCUS HERE !!!!!!!!!!!!!!!!!!!!!!!!
+		
 		
 		
 		
 		// === WALK-IN WORK ORDER CONFIGURATIONS ===
 		walkinWO.setBackground(Color.WHITE);
-		
+		walkinWO.setLayout(new MigLayout());
+		createHeader("WALK-IN WORK ORDER TEMPLATE", walkinWO); 
+		//^Why does back button for new repair dialogue disappear when I have this? 
+		//Maybe because there's only one instance of a back button? That must be it...
 		
 		
 		// === WORK COMPLETE CONFIGURATIONS ===
 		workCmpl.setBackground(Color.WHITE);
-		
+		workCmpl.setLayout(new MigLayout());
+		createHeader("WORK COMPLETED UPDATE", workCmpl);
 		
 		
 		// === PICK-UP DIALOG CONFIGURATIONS ===
 		pickUpDia.setBackground(Color.WHITE);
-		
+		pickUpDia.setLayout(new MigLayout());
+		createHeader("DIALOGUE FOR PICK-UP", pickUpDia);
 		
 		
 		// === COMPANY WORK ORDER CONFIGURATIONS ===
 		cmpnyWO.setBackground(Color.WHITE);
+		cmpnyWO.setLayout(new MigLayout());
+		createHeader("COMPANY WORK ORDER TEMPLATE", cmpnyWO);
 		
 		
 
-		// === CUSTOMER UPDATE CONFIGURATIONS ===
+		// === CUSTOMERS UPDATE CONFIGURATIONS ===
 		cusUpdate.setBackground(Color.WHITE);
+		cusUpdate.setLayout(new MigLayout());
+		createHeader("CUSTOMERS UPDATE TEXT", cusUpdate);
 		
 		
 		
 		// === APPROVAL DIALOG CONFIGURATIONS ===
 		apprDia.setBackground(Color.WHITE);
-		
+		apprDia.setLayout(new MigLayout());
+		createHeader("DIALOGUE FOR APPROVAL", apprDia);
 		
 		
 		// === DROP-OFF SIGNATURE CONFIGURATIONS ===
 		dOSig.setBackground(Color.WHITE);
+		dOSig.setLayout(new MigLayout());
+		createHeader("DROP-OFF SIGNATURE", dOSig);
 		
 		
 		
 		// === COMPLETE REPAIR CONFIGURATIONS ===
 		cmplRpr.setBackground(Color.WHITE);
-		
+		cmplRpr.setLayout(new MigLayout());
+		createHeader("COMPLETE REPAIR TEXT", cmplRpr);
 		
 		
 		// === REPAIR COMPLETE DIALOG CONFIGURATIONS ===
 		repComDia.setBackground(Color.WHITE);
-		
+		repComDia.setLayout(new MigLayout());
+		createHeader("DIALOGUE REPAIR COMPLETION", repComDia);
 		
 		
 		// === PICK-UP SIGNATURE CONFIGURATIONS ===
 		pUSig.setBackground(Color.WHITE);
-		
+		pUSig.setLayout(new MigLayout());
+		createHeader("PICK UP SIGNATURE", pUSig);
 		
 		
 		// === MAIN MENU SCREEN CONFIGURATIONS ===
@@ -151,10 +200,9 @@ public class Handbook {
 		//. If a screen you get to from a button (screen A) leads to another screen (screen B), then screen A should be
 		//  a JPanel that is set with another CardLayout object. On that JPanel will be another JPanel that has the MigLayout.
 		//    - If a screen is labeled with "2" and this screen leads to another screen, that other screen should be labeled "2a"
-		
-		mainScreen.setLayout(cl);
+		mainScreen.setLayout(mainScreenCl);
 		mainScreen.add(mainMenu, "1");
-		mainScreen.add(newRepDia, "2");
+		mainScreen.add(newRepDiaBase, "2");
 		mainScreen.add(walkinWO, "3");
 		mainScreen.add(workCmpl, "4");
 		mainScreen.add(pickUpDia, "5");
@@ -167,19 +215,13 @@ public class Handbook {
 		mainScreen.add(pUSig, "12");
 
 
-		cl.show(mainScreen, "1"); //Make the main menu show up first.
+		mainScreenCl.show(mainScreen, "1"); //Make the main menu (labeled as "1") show up first as part of the Card Layout.
 		
 		
 		
 		// === CLEVERTECH LOGO CONFIGURATIONS ===
 		logo.setBackground(Color.WHITE);
 		gbc.gridx = 0; gbc.gridy = 0;
-		/*
-		//Turns out these weight and anchor attributes don't need to be tweaked if I
-		//add the logo, label, and button set one after another...
-		gbc.weightx = 1; //Determines spacing with respect to columns. Higher value == less space?
-		gbc.anchor = GridBagConstraints.NORTH; //Do I need this?
-		*/
 		mainMenu.add(logo, gbc);
 		
 		
@@ -187,12 +229,6 @@ public class Handbook {
 		// === OPERATIONS MANUAL TEXT CONFIGURATIONS===
 		//opManualTxt.setFont(font);
 		gbc.gridx = 0; gbc.gridy = 1;
-		/*
-		//Turns out these weight and anchor attributes don't need to be tweaked if I
-		//add the logo, label, and button set one after another...
-		gbc.weighty = 1; //Determines spacing with respect to rows
-		gbc.anchor = GridBagConstraints.NORTH; //Don't think I need this...
-		*/
 		opManualTxt.setFont(new Font("Impact", Font.PLAIN, 25));
 		opManualTxt.setForeground(Color.decode("0x8FC967"));
 		mainMenu.add(opManualTxt, gbc);
@@ -204,14 +240,11 @@ public class Handbook {
 		//gbc.ipady = 30; //Adjust ipadx or ipady to modify a component's padding
 		btnArea.setLayout(new MigLayout());
 		gbc.gridx = 0; gbc.gridy = 2;
-		/*
-		//Turns out these weight and anchor attributes don't need to be tweaked if I
-		//add the logo, label, and button set one after another...
-		gbc.weighty = 10; //Don't think I need this...
-		gbc.anchor = GridBagConstraints.NORTH; //Don't think I need this...
-		*/
 		btnArea.setPreferredSize(new Dimension(700, 300)); //HARD-CODED DIMENSIONS
-		//btnArea.setBackground(Color.decode("0x1C6959")); //For testing
+		//btnArea.setBackground(Color.decode("0x8FC967")); //For testing
+		//^If you decide to go with this green box look, you'll need to get rid of the empty space at the bottom.
+		//To accomplish this, you'llprobably have to make the heights of the buttons a hard-coded value rather than 
+		//one that is dependent on the size of the green box. Moreover, you'll need to decrease the height of the box.
 		btnArea.setBackground(Color.WHITE);
 		mainMenu.add(btnArea, gbc);
 		
@@ -241,70 +274,89 @@ public class Handbook {
 		
 		// === CODE FOR HANDLING SCREEN CHANGING ===
 		
+		//BACK BUTTONS: (gotta be a more elegant way to do this...)
+		//. Perhaps there's no way around of needing to create a back button for each single screen...
+		//  - Yes there is! Wrap this code in a method? Include this code in the createHeader method?
+		/*
+		newRepDiaBackBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				mainScreenCl.show(mainScreen, "1");
+			}
+		});
+		
+		walkinWOBackBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				mainScreenCl.show(mainScreen, "1");
+			}
+		});
+		*/
+		
+		
+		//MAIN MENU BUTTONS:
 		newRepDiaBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				cl.show(mainScreen, "2");
+				mainScreenCl.show(mainScreen, "2");
 				//^Read this as: For mainScreen, show the (JPanel) component labeled as "2"
 			}
 		});
 		
 		walkinWOBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				cl.show(mainScreen, "3");
+				mainScreenCl.show(mainScreen, "3");
 			}
 		});
 		
 		workCmplBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				cl.show(mainScreen, "4");
+				mainScreenCl.show(mainScreen, "4");
 			}
 		});
 		
 		pickUpDiaBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				cl.show(mainScreen, "5");
+				mainScreenCl.show(mainScreen, "5");
 			}
 		});
 		
 		cmpnyWOBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				cl.show(mainScreen, "6");
+				mainScreenCl.show(mainScreen, "6");
 			}
 		});
 		
 		cusUpdateBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				cl.show(mainScreen, "7");
+				mainScreenCl.show(mainScreen, "7");
 			}
 		});
 		
 		apprDiaBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				cl.show(mainScreen, "8");
+				mainScreenCl.show(mainScreen, "8");
 			}
 		});
 
 		dOSigBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				cl.show(mainScreen, "9");
+				mainScreenCl.show(mainScreen, "9");
 			}
 		});
 		
 		cmplRprBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				cl.show(mainScreen, "10");
+				mainScreenCl.show(mainScreen, "10");
 			}
 		});
 		
 		repComDiaBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				cl.show(mainScreen, "11");
+				mainScreenCl.show(mainScreen, "11");
 			}
 		});
 		
 		pUSigBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				cl.show(mainScreen, "12");
+				mainScreenCl.show(mainScreen, "12");
 			}
 		});
 
@@ -312,7 +364,7 @@ public class Handbook {
 		
 		// === JFRAME CONFIGRATIONS ===
 		frame.setResizable(false); //Resizing destroys the layout. Disable for now.
-	    frame.getContentPane().setPreferredSize(new Dimension(900, 500)); //HARD-CODED DIMENSIONS
+	    frame.getContentPane().setPreferredSize(new Dimension(800, 500)); //HARD-CODED DIMENSIONS
 		frame.add(mainScreen);
 		
 		//Boiler-plate code:
@@ -333,16 +385,44 @@ public class Handbook {
 	 * @param btnArea
 	 */
 	private void prepButton(JButton btn) {
-		//Note that btnArea is 700 x 300
 		btn.setFont(new Font("Arial", Font.BOLD, 13));
 		btn.setMargin(new Insets(7, 7, 7, 7)); //Perhaps inset values should NOT be hard coded?
 		btn.setForeground(Color.WHITE);
 		btn.setBackground(Color.decode("0x026937"));
 		btn.setOpaque(true); //Need to say this so that the button's color shows up
 		//newRepDiaBtn.setBorderPainted(false); 
-		//^I would have need to say this if I didn't write the look and feel try/catch block
+		//^I would have need to say this if I didn't write the look and feel try/catch block situated
+		//near the beginning of the Handbook constructor
+	}
+	
+	
+	/**
+	 * Helper method
+	 * @param headerTxt
+	 * @param panel (must be set with MigLayout)
+	 */
+	private void createHeader(String headerTxt, JPanel panel) {
+		JPanel header = new JPanel();
+		header.setBackground(Color.decode("0x026937"));
+		header.setLayout(new MigLayout());
 		
-		//btnArea.add(btn); //Should I add in this method?
+		JLabel headerLbl = new JLabel(headerTxt); //String is variable
+		headerLbl.setFont(new Font("Helvetica", Font.BOLD, 25));
+		headerLbl.setForeground(Color.WHITE);
+		
+		//Maybe I can create the back button in here and add the Action Listener in here
+		//since I can access mainScreenCl from here...
+		JButton backBtn = new JButton("Back");
+		backBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				mainScreenCl.show(mainScreen, "1");
+			}
+		});
+		
+		header.add(backBtn, "wrap");
+		header.add(headerLbl, "gaptop 10"); //HARD-CODED VALUE
+		
+		panel.add(header, "height 100, pushx, growx, wrap"); //HARD-CODED VALUE. Setting values for Header here.
 	}
 	
 }
