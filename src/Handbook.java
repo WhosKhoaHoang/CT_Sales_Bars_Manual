@@ -86,7 +86,6 @@ public class Handbook {
 	        UIManager.setLookAndFeel( UIManager.getCrossPlatformLookAndFeelClassName() );
 		} 
 		catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -95,14 +94,8 @@ public class Handbook {
 		// === MAIN MENU CONFIGURATIONS ===
 		//mainMenu.setBackground(Color.decode("0x121E31")); //for debugging
 		mainMenu.setBackground(Color.WHITE);
-		
-		// ##### Layout with GridBagLayout #####
-		mainMenu.setLayout(new GridBagLayout());
-		GridBagConstraints gbc = new GridBagConstraints();
-		//gbc.insets = new Insets(10, 10, 10, 10);
-		gbc.insets = new Insets(6, 6, 6, 6);
-		
-		
+		mainMenu.setLayout(new MigLayout("align 50% 50%", "[center][center][center]"));
+		//The first 50% after align establishes horizontal centering and the second 50% establishes vertical centering
 		
 		// !!!!!!!!!!!!!!!!!!!!!!!! FOCUS HERE !!!!!!!!!!!!!!!!!!!!!!!!
 		
@@ -218,20 +211,17 @@ public class Handbook {
 		mainScreenCl.show(mainScreen, "1"); //Make the main menu (labeled as "1") show up first as part of the Card Layout.
 		
 		
+		// ++++++++++++++ MAIN MENU COMPONENTS BEGIN ++++++++++++++
 		
 		// === CLEVERTECH LOGO CONFIGURATIONS ===
 		logo.setBackground(Color.WHITE);
-		gbc.gridx = 0; gbc.gridy = 0;
-		mainMenu.add(logo, gbc);
-		
+		mainMenu.add(logo, "wrap");
 		
 		
 		// === OPERATIONS MANUAL TEXT CONFIGURATIONS===
-		//opManualTxt.setFont(font);
-		gbc.gridx = 0; gbc.gridy = 1;
 		opManualTxt.setFont(new Font("Impact", Font.PLAIN, 25));
 		opManualTxt.setForeground(Color.decode("0x8FC967"));
-		mainMenu.add(opManualTxt, gbc);
+		mainMenu.add(opManualTxt, "wrap");
 		
 		
 		
@@ -239,14 +229,15 @@ public class Handbook {
 		//gbc.insets = new Insets(15, 15, 15, 15); //Adjust insets to modify a component's margins
 		//gbc.ipady = 30; //Adjust ipadx or ipady to modify a component's padding
 		btnArea.setLayout(new MigLayout());
-		gbc.gridx = 0; gbc.gridy = 2;
 		btnArea.setPreferredSize(new Dimension(700, 300)); //HARD-CODED DIMENSIONS
 		//btnArea.setBackground(Color.decode("0x8FC967")); //For testing
 		//^If you decide to go with this green box look, you'll need to get rid of the empty space at the bottom.
 		//To accomplish this, you'llprobably have to make the heights of the buttons a hard-coded value rather than 
 		//one that is dependent on the size of the green box. Moreover, you'll need to decrease the height of the box.
 		btnArea.setBackground(Color.WHITE);
-		mainMenu.add(btnArea, gbc);
+		mainMenu.add(btnArea);
+
+		// ++++++++++++++ MAIN MENU COMPONENTS END ++++++++++++++
 		
 		
 		//Start adding buttons inside btnArea...
