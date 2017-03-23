@@ -91,10 +91,10 @@ public class Handbook {
 		
 		
 		
-		// === MAIN MENU CONFIGURATIONS ===
+		// === MAIN MENU CONFIGURATIONS === sex
 		//mainMenu.setBackground(Color.decode("0x121E31")); //for debugging
 		mainMenu.setBackground(Color.WHITE);
-		mainMenu.setLayout(new MigLayout("align 50% 50%", "[center][center][center]"));
+		mainMenu.setLayout(new MigLayout("align 50% 50%, gapy 10", "[center][center][center]"));
 		//The first 50% after align establishes horizontal centering and the second 50% establishes vertical centering
 		
 		// !!!!!!!!!!!!!!!!!!!!!!!! FOCUS HERE !!!!!!!!!!!!!!!!!!!!!!!!
