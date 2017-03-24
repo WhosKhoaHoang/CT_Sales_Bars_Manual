@@ -143,7 +143,7 @@ public class Handbook {
 		pickUpDia.setBackground(Color.WHITE);
 		pickUpDia.setLayout(new MigLayout());
 		createHeader("DIALOGUE FOR PICK-UP", pickUpDia);
-		fillComponentContent("pickup_dialogue.html", pickUpDia, "FOLLOW PICK-UP SIGNATURE", "12");
+		fillComponentContent("pickup_dialogue.html", pickUpDia, "FOLLOW PICK-UP SIGNATURE", "pickup_signature_screen");
 		
 		
 		// === COMPANY WORK ORDER CONFIGURATIONS ===
