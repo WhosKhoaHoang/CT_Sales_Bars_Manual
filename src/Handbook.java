@@ -1,6 +1,10 @@
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.html.HTML;
+import javax.swing.text.html.HTMLDocument;
+import javax.swing.text.html.HTMLEditorKit;
 
 import org.jdesktop.swingx.border.DropShadowBorder;
 
@@ -8,12 +12,11 @@ import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -31,7 +34,7 @@ public class Handbook {
 	private JPanel logo = new CTLogo();
 	private JPanel btnArea = new JPanel();
 	
-	private JPanel newRepDiaBase = new JPanel();
+	//private JPanel newRepDiaBase = new JPanel(); //Do I even need this?
 	private JPanel newRepDia = new JPanel();
 	private JPanel walkinWO = new JPanel();
 	private JPanel workCmpl = new JPanel();
@@ -70,6 +73,16 @@ public class Handbook {
 	 * Constructor
 	 */
 	public Handbook() {		
+		//FOR TESTING OUT BORDERS
+		Border blackline, raisedetched, loweredetched,
+	       raisedbevel, loweredbevel, empty;
+		blackline = BorderFactory.createLineBorder(Color.black);
+		raisedetched = BorderFactory.createEtchedBorder(EtchedBorder.RAISED);
+		loweredetched = BorderFactory.createEtchedBorder(EtchedBorder.LOWERED);
+		raisedbevel = BorderFactory.createRaisedBevelBorder();
+		loweredbevel = BorderFactory.createLoweredBevelBorder();
+		empty = BorderFactory.createEmptyBorder();
+		
 		//Set border for frame (the top level container)
         DropShadowBorder shadow = new DropShadowBorder();
         shadow.setShadowColor(Color.BLACK);
@@ -77,6 +90,7 @@ public class Handbook {
         shadow.setShowRightShadow(true);
         shadow.setShowBottomShadow(true);
         shadow.setShowTopShadow(true);
+        
         frame.getRootPane().setBorder(shadow);
         //frame.getRootPane().setBorder(BorderFactory.createMatteBorder(4, 4, 4, 4, Color.RED));        
         
@@ -91,35 +105,110 @@ public class Handbook {
 		
 		
 		
-		// === MAIN MENU CONFIGURATIONS === sex
+		// === MAIN MENU CONFIGURATIONS ===
 		//mainMenu.setBackground(Color.decode("0x121E31")); //for debugging
 		mainMenu.setBackground(Color.WHITE);
 		mainMenu.setLayout(new MigLayout("align 50% 50%, gapy 10", "[center][center][center]"));
 		//The first 50% after align establishes horizontal centering and the second 50% establishes vertical centering
 		
-		// !!!!!!!!!!!!!!!!!!!!!!!! FOCUS HERE !!!!!!!!!!!!!!!!!!!!!!!!
+		
+		
+		
+		
+		
+		// !!!!!!!!!!!!!!!!!!!!!!!! FOCUS HERE BEGIN !!!!!!!!!!!!!!!!!!!!!!!!
+		
+		//TODO: Try putting the dialogue into a separate html file and reading it into the program...
 		
 		// === NEW REPAIR DIALOGUE CONFIGURATIONS ===
 		//newRepDiaBase.setBackground(Color.WHITE); 
-		//. newRepDiaBase itself is an empty panel with nothing on it -- it's just here to handle screen changes
+		//. newRepDiaBase itself is an empty panel with nothing on it except newRepDia -- it's just here to handle screen changes
+		//   - Why have another component set with CardLayout when that component is already on a component set with CardLayout? Why
+		//	   not just use that first component with the CardLayout? That way seems to work, your original idea didn't...
 		//. This screen will link to the walk-in work order screen, so I think newRepDiaBase needs to be set with a CardLayout. 
-		//  Another JPanel, which will be set with a MigLayout, will be made that gets added to newRepDiaBase...
-		newRepDiaBase.setLayout(newRepDiaCl);
-		newRepDiaBase.add(newRepDia, "2a");
-		newRepDiaBase.add(walkinWO, "3");
+		//  Another JPanel, which will be called newRepDia set with a MigLayout, will be made that gets added to newRepDiaBase...
+		//. WAIT. Do I even need a newRepDiaBase?!?! This way wasn't working. Using mainScreen and mainScreenCl worked though...
+		
+		//OPTIONS:
+		//. Use JLabels for each line in the dialogue (but you can't select JLabel text [i.e., copy it]!)
+		//. Use a non-editable JTextArea (but this is bad because I can't add components to JTextAreas!)
+		//. Use a non-editable JTextPane and use setText() to insert text (but setText() changes the whole
+		//   text. What if I want to add a component somewhere in the text?)
+		//. Use a non-editable JTextPane and insert text into it with a HTMLEditorKit (but after each insertHTML(), a
+		//   line break is added. Will this be an issue?)...I THINK I'LL GO WITH THIS
+		
+		//NOTE THAT YOU NEED TO ADD EVENT LISTENERS to JTextPane if you want to allow user to copy and paste!!!
 		
 		newRepDia.setLayout(new MigLayout("", "", "[][]"));
 		newRepDia.setBackground(Color.WHITE);
 		
 		createHeader("DIALOGUE FOR NEW REPAIR", newRepDia);
 		
-		JTextArea newRepDiaTxt = new JTextArea(); //I should put this on a JScrollPane
-		newRepDia.add(newRepDiaTxt, "push, grow");
+		JTextPane newRepDiaTxt = new JTextPane();			
+		newRepDiaTxt.setEditable(false);
+		newRepDiaTxt.setContentType("text/html");
+		
+		JButton toWalkInWOBtn = new JButton("FOLLOW WALK-IN TEMPLATE");
+		
+		HTMLDocument newRepDiaTxtdoc = (HTMLDocument)newRepDiaTxt.getDocument();
+		HTMLEditorKit newRepDiaTxtEK = (HTMLEditorKit)newRepDiaTxt.getEditorKit();
+		
+		//Perhaps it would be more beneficial to store these strings in a separate HTML file and read it in? I think so. It'd break up
+		//the program into more manageable pieces!!! It'll be easier to edit the HTML also -- it's a pain to edit the string.
+		String newRepDiaTxt1 = "<strong style='color:78be48; font-size:200%'>.</strong> <strong>Sales Person:</strong> \"Hi there, how can I help?\"";
+	
+		String newRepDiaTxt2 = "<strong style='color:78be48; font-size:200%'>.</strong> <strong>Guest:</strong> \"I’m having problems with my computer\"";
+		
+		String newRepDiaTxt3 = "<strong style='color:78be48; font-size:200%'>.</strong> <strong>Sales Person:</strong>  \"Would you mind me taking a quick look? If you have a "
+								+ "few minutes, I’d like to see if I can diagnose the issue here with you.\"";
 		
 		
-		// !!!!!!!!!!!!!!!!!!!!!!!! FOCUS HERE !!!!!!!!!!!!!!!!!!!!!!!!
+		String newRepDiaTxt4 = "<strong style='color:78be48; font-size:200%'>.</strong> <strong>Sales Person:</strong> At this point you may do the best to your"
+				+ " ability to diagnose any possible issues occurring with the computer and quote customer more than likely pricing scenarios and "
+				+ "retrieve approvals for possible outcomes. You can continue with small talk like questions \"How’s your day been?\""
+				+ " \"Is this the first time your computer crashed?\" \"Has your computer been liquid damaged and if yes what areas of the computer?\"";
 		
 		
+		String newRepDiaTxt5 = "<strong style='color:78be48; font-size:200%'>.</strong> <strong>Sales Person:</strong> \"I can bring in your computer to verify the "
+				+ "diagnostics, turnaround time is typically 2-3 days to complete the repair.\"";  
+
+		String newRepDiaTxt6 = "<strong style='color:78be48; font-size:200%'>.</strong> <strong>Sales Person:</strong> \"Thank you for being so patient,  I will need a few more minutes to get all the notes down for our technicians.\"";
+		
+		String newRepDiaTxt7 = "<strong style='color:78be48; font-size:200%'>.</strong> <strong>Sales Person:</strong> Have customer sign legal contract, remind customer to bring photo ID for pick up.";
+
+		try {
+			newRepDiaTxtEK.insertHTML(newRepDiaTxtdoc, newRepDiaTxtdoc.getLength(), newRepDiaTxt1, 0, 0, null);			
+			newRepDiaTxtEK.insertHTML(newRepDiaTxtdoc, newRepDiaTxtdoc.getLength(), newRepDiaTxt2, 0, 0, null);
+			newRepDiaTxtEK.insertHTML(newRepDiaTxtdoc, newRepDiaTxtdoc.getLength(), newRepDiaTxt3, 0, 0, null);
+			newRepDiaTxtEK.insertHTML(newRepDiaTxtdoc, newRepDiaTxtdoc.getLength(), newRepDiaTxt4, 0, 0, null);
+			newRepDiaTxtEK.insertHTML(newRepDiaTxtdoc, newRepDiaTxtdoc.getLength(), newRepDiaTxt5, 0, 0, null);
+			newRepDiaTxtEK.insertHTML(newRepDiaTxtdoc, newRepDiaTxtdoc.getLength(), newRepDiaTxt6, 0, 0, null);
+			newRepDiaTxt.insertComponent(toWalkInWOBtn); //Occurs at 6th dialog line. If this were in a loop, perhaps you can say something like if i == 6?
+			newRepDiaTxtEK.insertHTML(newRepDiaTxtdoc, newRepDiaTxtdoc.getLength(), newRepDiaTxt7, 0, 0, null);
+		} catch (BadLocationException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		JScrollPane newRepDiaTxtScroll = new JScrollPane(newRepDiaTxt);
+		//newRepDiaTxtScroll.setBorder(null);
+		
+		toWalkInWOBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				mainScreenCl.show(mainScreen, "3");
+			}
+		});
+		
+		newRepDiaTxtScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+		newRepDiaTxtScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS); 
+		newRepDia.add(newRepDiaTxtScroll, "push, grow");
+		
+		
+		// !!!!!!!!!!!!!!!!!!!!!!!! FOCUS HERE END !!!!!!!!!!!!!!!!!!!!!!!!
+		
+		
+
 		
 		
 		// === WALK-IN WORK ORDER CONFIGURATIONS ===
@@ -128,6 +217,15 @@ public class Handbook {
 		createHeader("WALK-IN WORK ORDER TEMPLATE", walkinWO); 
 		//^Why does back button for new repair dialogue disappear when I have this? 
 		//Maybe because there's only one instance of a back button? That must be it...
+		
+		JTextPane walkinWOTxt = new JTextPane();		
+		walkinWOTxt.setEditable(false);
+		walkinWOTxt.setContentType("text/html");
+				
+		HTMLDocument walkinWOdoc = (HTMLDocument)newRepDiaTxt.getDocument();
+		HTMLEditorKit walkinWOeditorKit = (HTMLEditorKit)newRepDiaTxt.getEditorKit();
+		
+		String walkinWOTxt1;
 		
 		
 		// === WORK COMPLETE CONFIGURATIONS ===
@@ -193,9 +291,13 @@ public class Handbook {
 		//. If a screen you get to from a button (screen A) leads to another screen (screen B), then screen A should be
 		//  a JPanel that is set with another CardLayout object. On that JPanel will be another JPanel that has the MigLayout.
 		//    - If a screen is labeled with "2" and this screen leads to another screen, that other screen should be labeled "2a"
+		//    - NO. This didn't seem to work. Java didn't let you do that. Since Screen B happened to be a screen that you could 
+		//		get from the main menu, you could simply use the CardLayout that was already set on the main menu -- no need to 
+		//		set another CardLayout on on Screen A to house Screen B. If you really wanted that arrangement, then you would have 
+		//		need to create a new copy of Screen B...but what a waste, right?
 		mainScreen.setLayout(mainScreenCl);
 		mainScreen.add(mainMenu, "1");
-		mainScreen.add(newRepDiaBase, "2");
+		mainScreen.add(newRepDia, "2");
 		mainScreen.add(walkinWO, "3");
 		mainScreen.add(workCmpl, "4");
 		mainScreen.add(pickUpDia, "5");
@@ -207,11 +309,7 @@ public class Handbook {
 		mainScreen.add(repComDia, "11");
 		mainScreen.add(pUSig, "12");
 
-
 		mainScreenCl.show(mainScreen, "1"); //Make the main menu (labeled as "1") show up first as part of the Card Layout.
-		
-		
-		// ++++++++++++++ MAIN MENU COMPONENTS BEGIN ++++++++++++++
 		
 		// === CLEVERTECH LOGO CONFIGURATIONS ===
 		logo.setBackground(Color.WHITE);
@@ -232,12 +330,10 @@ public class Handbook {
 		btnArea.setPreferredSize(new Dimension(700, 300)); //HARD-CODED DIMENSIONS
 		//btnArea.setBackground(Color.decode("0x8FC967")); //For testing
 		//^If you decide to go with this green box look, you'll need to get rid of the empty space at the bottom.
-		//To accomplish this, you'llprobably have to make the heights of the buttons a hard-coded value rather than 
+		//To accomplish this, you'll probably have to make the heights of the buttons a hard-coded value rather than 
 		//one that is dependent on the size of the green box. Moreover, you'll need to decrease the height of the box.
 		btnArea.setBackground(Color.WHITE);
 		mainMenu.add(btnArea);
-
-		// ++++++++++++++ MAIN MENU COMPONENTS END ++++++++++++++
 		
 		
 		//Start adding buttons inside btnArea...
@@ -263,25 +359,7 @@ public class Handbook {
 		}
 		
 		
-		// === CODE FOR HANDLING SCREEN CHANGING ===
-		
-		//BACK BUTTONS: (gotta be a more elegant way to do this...)
-		//. Perhaps there's no way around of needing to create a back button for each single screen...
-		//  - Yes there is! Wrap this code in a method? Include this code in the createHeader method?
-		/*
-		newRepDiaBackBtn.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				mainScreenCl.show(mainScreen, "1");
-			}
-		});
-		
-		walkinWOBackBtn.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				mainScreenCl.show(mainScreen, "1");
-			}
-		});
-		*/
-		
+		// === CODE FOR HANDLING SCREEN CHANGING FROM THE MAIN MENU ===
 		
 		//MAIN MENU BUTTONS:
 		newRepDiaBtn.addActionListener(new ActionListener() {
@@ -350,7 +428,6 @@ public class Handbook {
 				mainScreenCl.show(mainScreen, "12");
 			}
 		});
-
 				
 		
 		// === JFRAME CONFIGRATIONS ===
