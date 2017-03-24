@@ -16,6 +16,9 @@ import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,6 +26,7 @@ import java.util.List;
 
 import net.miginfocom.swing.MigLayout;
 
+//TODO: Consider changing hard-coded values!
 
 public class Handbook {
 	
@@ -111,13 +115,7 @@ public class Handbook {
 		mainMenu.setLayout(new MigLayout("align 50% 50%, gapy 10", "[center][center][center]"));
 		//The first 50% after align establishes horizontal centering and the second 50% establishes vertical centering
 		
-		
-		
-		
-		
-		
-		// !!!!!!!!!!!!!!!!!!!!!!!! FOCUS HERE BEGIN !!!!!!!!!!!!!!!!!!!!!!!!
-		
+				
 		//TODO: Try putting the dialogue into a separate html file and reading it into the program...
 		
 		// === NEW REPAIR DIALOGUE CONFIGURATIONS ===
@@ -150,11 +148,12 @@ public class Handbook {
 		
 		JButton toWalkInWOBtn = new JButton("FOLLOW WALK-IN TEMPLATE");
 		
-		HTMLDocument newRepDiaTxtdoc = (HTMLDocument)newRepDiaTxt.getDocument();
+		HTMLDocument newRepDiaTxtDoc = (HTMLDocument)newRepDiaTxt.getDocument();
 		HTMLEditorKit newRepDiaTxtEK = (HTMLEditorKit)newRepDiaTxt.getEditorKit();
 		
 		//Perhaps it would be more beneficial to store these strings in a separate HTML file and read it in? I think so. It'd break up
 		//the program into more manageable pieces!!! It'll be easier to edit the HTML also -- it's a pain to edit the string.
+		
 		String newRepDiaTxt1 = "<strong style='color:78be48; font-size:200%'>.</strong> <strong>Sales Person:</strong> \"Hi there, how can I help?\"";
 	
 		String newRepDiaTxt2 = "<strong style='color:78be48; font-size:200%'>.</strong> <strong>Guest:</strong> \"IÕm having problems with my computer\"";
@@ -177,14 +176,17 @@ public class Handbook {
 		String newRepDiaTxt7 = "<strong style='color:78be48; font-size:200%'>.</strong> <strong>Sales Person:</strong> Have customer sign legal contract, remind customer to bring photo ID for pick up.";
 
 		try {
-			newRepDiaTxtEK.insertHTML(newRepDiaTxtdoc, newRepDiaTxtdoc.getLength(), newRepDiaTxt1, 0, 0, null);			
-			newRepDiaTxtEK.insertHTML(newRepDiaTxtdoc, newRepDiaTxtdoc.getLength(), newRepDiaTxt2, 0, 0, null);
-			newRepDiaTxtEK.insertHTML(newRepDiaTxtdoc, newRepDiaTxtdoc.getLength(), newRepDiaTxt3, 0, 0, null);
-			newRepDiaTxtEK.insertHTML(newRepDiaTxtdoc, newRepDiaTxtdoc.getLength(), newRepDiaTxt4, 0, 0, null);
-			newRepDiaTxtEK.insertHTML(newRepDiaTxtdoc, newRepDiaTxtdoc.getLength(), newRepDiaTxt5, 0, 0, null);
-			newRepDiaTxtEK.insertHTML(newRepDiaTxtdoc, newRepDiaTxtdoc.getLength(), newRepDiaTxt6, 0, 0, null);
+			//. Note that initially, newRepDiaTxtDoc is empty.
+			//. If you're gonna read HTML from a file, perhaps you should loop through the file's contents line by line while inserting
+			//  each line into the third argument...
+			newRepDiaTxtEK.insertHTML(newRepDiaTxtDoc, newRepDiaTxtDoc.getLength(), newRepDiaTxt1, 0, 0, null);			
+			newRepDiaTxtEK.insertHTML(newRepDiaTxtDoc, newRepDiaTxtDoc.getLength(), newRepDiaTxt2, 0, 0, null);
+			newRepDiaTxtEK.insertHTML(newRepDiaTxtDoc, newRepDiaTxtDoc.getLength(), newRepDiaTxt3, 0, 0, null);
+			newRepDiaTxtEK.insertHTML(newRepDiaTxtDoc, newRepDiaTxtDoc.getLength(), newRepDiaTxt4, 0, 0, null);
+			newRepDiaTxtEK.insertHTML(newRepDiaTxtDoc, newRepDiaTxtDoc.getLength(), newRepDiaTxt5, 0, 0, null);
+			newRepDiaTxtEK.insertHTML(newRepDiaTxtDoc, newRepDiaTxtDoc.getLength(), newRepDiaTxt6, 0, 0, null);
 			newRepDiaTxt.insertComponent(toWalkInWOBtn); //Occurs at 6th dialog line. If this were in a loop, perhaps you can say something like if i == 6?
-			newRepDiaTxtEK.insertHTML(newRepDiaTxtdoc, newRepDiaTxtdoc.getLength(), newRepDiaTxt7, 0, 0, null);
+			newRepDiaTxtEK.insertHTML(newRepDiaTxtDoc, newRepDiaTxtDoc.getLength(), newRepDiaTxt7, 0, 0, null);
 		} catch (BadLocationException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -200,33 +202,17 @@ public class Handbook {
 			}
 		});
 		
-		newRepDiaTxtScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
-		newRepDiaTxtScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS); 
+		//newRepDiaTxtScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+		//newRepDiaTxtScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS); 
 		newRepDia.add(newRepDiaTxtScroll, "push, grow");
-		
-		
-		// !!!!!!!!!!!!!!!!!!!!!!!! FOCUS HERE END !!!!!!!!!!!!!!!!!!!!!!!!
-		
-		
-
 		
 		
 		// === WALK-IN WORK ORDER CONFIGURATIONS ===
 		walkinWO.setBackground(Color.WHITE);
 		walkinWO.setLayout(new MigLayout());
 		createHeader("WALK-IN WORK ORDER TEMPLATE", walkinWO); 
-		//^Why does back button for new repair dialogue disappear when I have this? 
-		//Maybe because there's only one instance of a back button? That must be it...
-		
-		JTextPane walkinWOTxt = new JTextPane();		
-		walkinWOTxt.setEditable(false);
-		walkinWOTxt.setContentType("text/html");
-				
-		HTMLDocument walkinWOdoc = (HTMLDocument)newRepDiaTxt.getDocument();
-		HTMLEditorKit walkinWOeditorKit = (HTMLEditorKit)newRepDiaTxt.getEditorKit();
-		
-		String walkinWOTxt1;
-		
+		fillBasicContent("walkinWO.html", walkinWO);
+
 		
 		// === WORK COMPLETE CONFIGURATIONS ===
 		workCmpl.setBackground(Color.WHITE);
@@ -244,7 +230,7 @@ public class Handbook {
 		cmpnyWO.setBackground(Color.WHITE);
 		cmpnyWO.setLayout(new MigLayout());
 		createHeader("COMPANY WORK ORDER TEMPLATE", cmpnyWO);
-		
+		fillBasicContent("company_WO.html", cmpnyWO);
 		
 
 		// === CUSTOMERS UPDATE CONFIGURATIONS ===
@@ -493,4 +479,42 @@ public class Handbook {
 		panel.add(header, "height 100, pushx, growx, wrap"); //HARD-CODED VALUE. Setting values for Header here.
 	}
 	
+	
+	/**
+	 * A helper method.
+	 * @param fileName Name of the file to read content from
+	 * @param panel Must be set with a MigLayout
+	 */
+	private void fillBasicContent(String fileName, JPanel panel) {
+		JTextPane content = new JTextPane();		
+		content.setEditable(false);
+		content.setContentType("text/html");
+		
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(fileName));
+            StringBuilder sb = new StringBuilder();
+            String line = br.readLine();
+            
+            while (line != null) {
+            	sb.append(line);
+            	line = br.readLine();
+            }
+            
+            String everything = sb.toString();
+            content.setText(everything);
+            br.close();         
+        }
+        catch(FileNotFoundException e) { e.printStackTrace(); }
+        catch(IOException e) {e.printStackTrace();}
+		
+		final JScrollPane contentScroll = new JScrollPane(content);
+		//contentScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+		contentScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS); 
+		SwingUtilities.invokeLater(new Runnable() { //This is the only way I can get the JScrollPane to default to a 0 value...
+			   public void run() { 
+				   contentScroll.getVerticalScrollBar().setValue(0);
+			   }
+			});
+		panel.add(contentScroll, "push, grow");
+	}
 }
