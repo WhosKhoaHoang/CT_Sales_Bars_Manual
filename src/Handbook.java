@@ -10,6 +10,7 @@ import org.jdesktop.swingx.border.DropShadowBorder;
 
 import java.awt.CardLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Insets;
@@ -135,21 +136,28 @@ public class Handbook {
 		//. Use a non-editable JTextPane and insert text into it with a HTMLEditorKit (but after each insertHTML(), a
 		//   line break is added. Will this be an issue?)...I THINK I'LL GO WITH THIS
 		
-		//NOTE THAT YOU NEED TO ADD EVENT LISTENERS to JTextPane if you want to allow user to copy and paste!!!
+		//TODO: NOTE THAT YOU NEED TO ADD EVENT LISTENERS to JTextPane if you want to allow user to copy and paste!!!
 		
 		newRepDia.setLayout(new MigLayout("", "", "[][]"));
 		newRepDia.setBackground(Color.WHITE);
-		
 		createHeader("DIALOGUE FOR NEW REPAIR", newRepDia);
 		
-		JTextPane newRepDiaTxt = new JTextPane();			
-		newRepDiaTxt.setEditable(false);
-		newRepDiaTxt.setContentType("text/html");
+		fillComponentContent("new_repair_dialogue.html", newRepDia, "FOLLOW WALK-IN TEMPLATE", "3");
+		
+		/*
+		JTextPane newRepDiaContent = new JTextPane();			
+		newRepDiaContent.setEditable(false);
+		newRepDiaContent.setContentType("text/html");
 		
 		JButton toWalkInWOBtn = new JButton("FOLLOW WALK-IN TEMPLATE");
+		toWalkInWOBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				mainScreenCl.show(mainScreen, "3");
+			}
+		});
 		
-		HTMLDocument newRepDiaTxtDoc = (HTMLDocument)newRepDiaTxt.getDocument();
-		HTMLEditorKit newRepDiaTxtEK = (HTMLEditorKit)newRepDiaTxt.getEditorKit();
+		HTMLDocument newRepDiaContentDoc = (HTMLDocument)newRepDiaContent.getDocument();
+		HTMLEditorKit newRepDiaContentEK = (HTMLEditorKit)newRepDiaContent.getEditorKit();
 		
 		//Perhaps it would be more beneficial to store these strings in a separate HTML file and read it in? I think so. It'd break up
 		//the program into more manageable pieces!!! It'll be easier to edit the HTML also -- it's a pain to edit the string.
@@ -176,36 +184,30 @@ public class Handbook {
 		String newRepDiaTxt7 = "<strong style='color:78be48; font-size:200%'>.</strong> <strong>Sales Person:</strong> Have customer sign legal contract, remind customer to bring photo ID for pick up.";
 
 		try {
-			//. Note that initially, newRepDiaTxtDoc is empty.
+			//. Note that initially, newRepDiaContentDoc is empty.
 			//. If you're gonna read HTML from a file, perhaps you should loop through the file's contents line by line while inserting
 			//  each line into the third argument...
-			newRepDiaTxtEK.insertHTML(newRepDiaTxtDoc, newRepDiaTxtDoc.getLength(), newRepDiaTxt1, 0, 0, null);			
-			newRepDiaTxtEK.insertHTML(newRepDiaTxtDoc, newRepDiaTxtDoc.getLength(), newRepDiaTxt2, 0, 0, null);
-			newRepDiaTxtEK.insertHTML(newRepDiaTxtDoc, newRepDiaTxtDoc.getLength(), newRepDiaTxt3, 0, 0, null);
-			newRepDiaTxtEK.insertHTML(newRepDiaTxtDoc, newRepDiaTxtDoc.getLength(), newRepDiaTxt4, 0, 0, null);
-			newRepDiaTxtEK.insertHTML(newRepDiaTxtDoc, newRepDiaTxtDoc.getLength(), newRepDiaTxt5, 0, 0, null);
-			newRepDiaTxtEK.insertHTML(newRepDiaTxtDoc, newRepDiaTxtDoc.getLength(), newRepDiaTxt6, 0, 0, null);
-			newRepDiaTxt.insertComponent(toWalkInWOBtn); //Occurs at 6th dialog line. If this were in a loop, perhaps you can say something like if i == 6?
-			newRepDiaTxtEK.insertHTML(newRepDiaTxtDoc, newRepDiaTxtDoc.getLength(), newRepDiaTxt7, 0, 0, null);
+			newRepDiaContentEK.insertHTML(newRepDiaContentDoc, newRepDiaContentDoc.getLength(), newRepDiaTxt1, 0, 0, null);			
+			newRepDiaContentEK.insertHTML(newRepDiaContentDoc, newRepDiaContentDoc.getLength(), newRepDiaTxt2, 0, 0, null);
+			newRepDiaContentEK.insertHTML(newRepDiaContentDoc, newRepDiaContentDoc.getLength(), newRepDiaTxt3, 0, 0, null);
+			newRepDiaContentEK.insertHTML(newRepDiaContentDoc, newRepDiaContentDoc.getLength(), newRepDiaTxt4, 0, 0, null);
+			newRepDiaContentEK.insertHTML(newRepDiaContentDoc, newRepDiaContentDoc.getLength(), newRepDiaTxt5, 0, 0, null);
+			newRepDiaContentEK.insertHTML(newRepDiaContentDoc, newRepDiaContentDoc.getLength(), newRepDiaTxt6, 0, 0, null);
+			newRepDiaContent.insertComponent(toWalkInWOBtn); //Occurs at 6th dialog line. If this were in a loop, perhaps you can say something like if i == 6?
+			newRepDiaContentEK.insertHTML(newRepDiaContentDoc, newRepDiaContentDoc.getLength(), newRepDiaTxt7, 0, 0, null);
 		} catch (BadLocationException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		
-		JScrollPane newRepDiaTxtScroll = new JScrollPane(newRepDiaTxt);
+		JScrollPane newRepDiaContentScroll = new JScrollPane(newRepDiaContent);
 		//newRepDiaTxtScroll.setBorder(null);
-		
-		toWalkInWOBtn.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				mainScreenCl.show(mainScreen, "3");
-			}
-		});
 		
 		//newRepDiaTxtScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 		//newRepDiaTxtScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS); 
-		newRepDia.add(newRepDiaTxtScroll, "push, grow");
-		
+		newRepDia.add(newRepDiaContentScroll, "push, grow");
+		*/
 		
 		// === WALK-IN WORK ORDER CONFIGURATIONS ===
 		walkinWO.setBackground(Color.WHITE);
@@ -218,13 +220,58 @@ public class Handbook {
 		workCmpl.setBackground(Color.WHITE);
 		workCmpl.setLayout(new MigLayout());
 		createHeader("WORK COMPLETED UPDATE", workCmpl);
+		fillComponentContent("work_completed_text.html", workCmpl, "FOLLOW DIALOGUE FOR APPROVAL", "8");
+		
+		/*
+		//Configure JTextPane() for content:
+		JTextPane workCmplContent = new JTextPane();			
+		workCmplContent.setEditable(false);
+		workCmplContent.setContentType("text/html");
+		
+		//Make button to other page and set ActionListener
+		JButton toApprDiaBtn = new JButton("FOLLOW DIALOGUE FOR APPROVAL");
+		toApprDiaBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				mainScreenCl.show(mainScreen, "8");
+			}
+		});
+		
+		//Make HTMLDocument
+		HTMLDocument workCmplContentDoc = (HTMLDocument)workCmplContent.getDocument();
+		HTMLEditorKit workCmplContentEK = (HTMLEditorKit)workCmplContent.getEditorKit();
+		
+		//Make Strings
+		String workCmplTxt1 = "<strong>Examples:</strong>";
+		String workCmplTxt2 = "<strong style='color:78be48; font-size:200%'>.</strong> Customers (part) was found to be (defective, liquid damaged, not functional) and need of (replacement or repair).";
+		String workCmplTxt3 = "<strong style='color:78be48; font-size:200%'>.</strong> (part1), (part2), (part3) would also need to be replaced to complete the repair.";
+		String workCmplTxt4 = "<strong style='color:78be48; font-size:200%'>.</strong> Parts are: (in stock or not in stock) Estimated turnaround time __/__/__.";
+		
+		//Insert into HTMLDocument
+		try {
+			workCmplContentEK.insertHTML(workCmplContentDoc, workCmplContentDoc.getLength(), workCmplTxt1, 0, 0, null);			
+			workCmplContentEK.insertHTML(workCmplContentDoc, workCmplContentDoc.getLength(), workCmplTxt2, 0, 0, null);			
+			workCmplContentEK.insertHTML(workCmplContentDoc, workCmplContentDoc.getLength(), workCmplTxt3, 0, 0, null);			
+			workCmplContentEK.insertHTML(workCmplContentDoc, workCmplContentDoc.getLength(), workCmplTxt4, 0, 0, null);			
+			workCmplContent.insertComponent(toApprDiaBtn);
+		} catch (BadLocationException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		//Make JScrollPane to contain content
+		JScrollPane workCmplContentScroll = new JScrollPane(workCmplContent);
+		
+		//Add JScrollPant onto JPanel for this screen
+		workCmpl.add(workCmplContentScroll, "push, grow");
+		*/
 		
 		
 		// === PICK-UP DIALOG CONFIGURATIONS ===
 		pickUpDia.setBackground(Color.WHITE);
 		pickUpDia.setLayout(new MigLayout());
 		createHeader("DIALOGUE FOR PICK-UP", pickUpDia);
-		
+		fillComponentContent("pickup_dialogue.html", pickUpDia, "FOLLOW PICK-UP SIGNATURE", "12");
 		
 		// === COMPANY WORK ORDER CONFIGURATIONS ===
 		cmpnyWO.setBackground(Color.WHITE);
@@ -237,7 +284,7 @@ public class Handbook {
 		cusUpdate.setBackground(Color.WHITE);
 		cusUpdate.setLayout(new MigLayout());
 		createHeader("CUSTOMERS UPDATE TEXT", cusUpdate);
-		
+		fillBasicContent("customers_update_text.html", cusUpdate);
 		
 		
 		// === APPROVAL DIALOG CONFIGURATIONS ===
@@ -250,7 +297,7 @@ public class Handbook {
 		dOSig.setBackground(Color.WHITE);
 		dOSig.setLayout(new MigLayout());
 		createHeader("DROP-OFF SIGNATURE", dOSig);
-		
+		fillBasicContent("drop_off_sig.html", dOSig);
 		
 		
 		// === COMPLETE REPAIR CONFIGURATIONS ===
@@ -269,6 +316,7 @@ public class Handbook {
 		pUSig.setBackground(Color.WHITE);
 		pUSig.setLayout(new MigLayout());
 		createHeader("PICK UP SIGNATURE", pUSig);
+		fillBasicContent("pick_up_sig.html", pUSig);
 		
 		
 		// === MAIN MENU SCREEN CONFIGURATIONS ===
@@ -516,5 +564,82 @@ public class Handbook {
 			   }
 			});
 		panel.add(contentScroll, "push, grow");
+	}
+	
+	
+	private void fillComponentContent(String fileName, JPanel panel, String btnTxt, final String jumpToPgLbl) {
+		
+		//Configure JTextPane() for content:
+		JTextPane content = new JTextPane();			
+		content.setEditable(false);
+		content.setContentType("text/html");
+		
+		//Make button to other page and set ActionListener
+		//- In the method, use the provided componentLst? But how am I going to handle setting of the ActionListener?
+		//    For now, let's just pass in a single button...but for future reference, maybe you can actually have each 
+		//	  component in componentLst be paired with the string description of the page
+		//    that the component would jump to...
+		/*
+		//If componentLst were an ArrayList of pairs...(Note that you'd have to make a Pair class of your own! Java doesn't have one)
+		for (int i = 0; i < componentLst.size(); i++) {
+			componentLst.get(i).first.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					mainScreenCl.show(mainScreen, componentLst.get(i).second); 
+					//Hmm, this second argument needs to be declared with final. How am I gonna do that with contents in an ArrayList?
+				}
+			}
+		}
+		*/
+		
+		JButton button = new JButton(btnTxt);
+		button.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				mainScreenCl.show(mainScreen, jumpToPgLbl);  //mainScreenCl and mainScreen must be referred to in this actionListener
+			}
+		});
+		
+		//Make Strings...or in this method, you'd read each line in an HTML file		
+        String line = null;
+        List<String> lineLst = new ArrayList<String>();
+        try {
+
+            BufferedReader bufferedReader = new BufferedReader(new FileReader(fileName));
+            
+            while((line = bufferedReader.readLine()) != null) {
+            	lineLst.add(line);
+            }
+            
+            bufferedReader.close();         
+        }
+        catch(FileNotFoundException e) { e.printStackTrace(); }
+        catch(IOException e) { e.printStackTrace();}
+		
+		
+		//Make HTMLDocument and HTMLEditorKit
+		HTMLDocument contentDoc = (HTMLDocument)content.getDocument();
+		HTMLEditorKit contentEK = (HTMLEditorKit)content.getEditorKit();
+		for (int i = 0; i < lineLst.size(); i++) {
+			if (lineLst.get(i).equals("<!--INSERT-->")) {
+				content.insertComponent(button);
+				//If you wanted to go the componentLst route, you can have a j index variable and say something like:
+				//content.insertComponent(componentLst.get(j)); j++;
+			}
+			else {
+				try {
+					contentEK.insertHTML(contentDoc, contentDoc.getLength(), lineLst.get(i), 0, 0, null);
+					//Seems like inserting a single opening tag and the corresponding closing tag later on won't do anything...
+					// - If that's the case, you're gonna have to be a bit verbose on how you write your HTML tags in the HTML file. See
+					//    work_completed_text.html as an example.
+				} 
+				catch (BadLocationException e1) { e1.printStackTrace(); } 
+				catch (IOException e1) { e1.printStackTrace(); }
+			}
+		}
+		
+		//Make JScrollPane to contain content
+		JScrollPane contentScroll = new JScrollPane(content);
+		
+		//Add JScrollPant onto JPanel for this screen
+		panel.add(contentScroll, "push, grow");		
 	}
 }
