@@ -115,99 +115,15 @@ public class Handbook {
 		mainMenu.setBackground(Color.WHITE);
 		mainMenu.setLayout(new MigLayout("align 50% 50%, gapy 10", "[center][center][center]"));
 		//The first 50% after align establishes horizontal centering and the second 50% establishes vertical centering
-		
 				
 		//TODO: Try putting the dialogue into a separate html file and reading it into the program...
-		
-		// === NEW REPAIR DIALOGUE CONFIGURATIONS ===
-		//newRepDiaBase.setBackground(Color.WHITE); 
-		//. newRepDiaBase itself is an empty panel with nothing on it except newRepDia -- it's just here to handle screen changes
-		//   - Why have another component set with CardLayout when that component is already on a component set with CardLayout? Why
-		//	   not just use that first component with the CardLayout? That way seems to work, your original idea didn't...
-		//. This screen will link to the walk-in work order screen, so I think newRepDiaBase needs to be set with a CardLayout. 
-		//  Another JPanel, which will be called newRepDia set with a MigLayout, will be made that gets added to newRepDiaBase...
-		//. WAIT. Do I even need a newRepDiaBase?!?! This way wasn't working. Using mainScreen and mainScreenCl worked though...
-		
-		//OPTIONS:
-		//. Use JLabels for each line in the dialogue (but you can't select JLabel text [i.e., copy it]!)
-		//. Use a non-editable JTextArea (but this is bad because I can't add components to JTextAreas!)
-		//. Use a non-editable JTextPane and use setText() to insert text (but setText() changes the whole
-		//   text. What if I want to add a component somewhere in the text?)
-		//. Use a non-editable JTextPane and insert text into it with a HTMLEditorKit (but after each insertHTML(), a
-		//   line break is added. Will this be an issue?)...I THINK I'LL GO WITH THIS
-		
 		//TODO: NOTE THAT YOU NEED TO ADD EVENT LISTENERS to JTextPane if you want to allow user to copy and paste!!!
 		
 		newRepDia.setLayout(new MigLayout("", "", "[][]"));
 		newRepDia.setBackground(Color.WHITE);
-		createHeader("DIALOGUE FOR NEW REPAIR", newRepDia);
-		
-		fillComponentContent("new_repair_dialogue.html", newRepDia, "FOLLOW WALK-IN TEMPLATE", "3");
-		
-		/*
-		JTextPane newRepDiaContent = new JTextPane();			
-		newRepDiaContent.setEditable(false);
-		newRepDiaContent.setContentType("text/html");
-		
-		JButton toWalkInWOBtn = new JButton("FOLLOW WALK-IN TEMPLATE");
-		toWalkInWOBtn.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				mainScreenCl.show(mainScreen, "3");
-			}
-		});
-		
-		HTMLDocument newRepDiaContentDoc = (HTMLDocument)newRepDiaContent.getDocument();
-		HTMLEditorKit newRepDiaContentEK = (HTMLEditorKit)newRepDiaContent.getEditorKit();
-		
-		//Perhaps it would be more beneficial to store these strings in a separate HTML file and read it in? I think so. It'd break up
-		//the program into more manageable pieces!!! It'll be easier to edit the HTML also -- it's a pain to edit the string.
-		
-		String newRepDiaTxt1 = "<strong style='color:78be48; font-size:200%'>.</strong> <strong>Sales Person:</strong> \"Hi there, how can I help?\"";
-	
-		String newRepDiaTxt2 = "<strong style='color:78be48; font-size:200%'>.</strong> <strong>Guest:</strong> \"I’m having problems with my computer\"";
-		
-		String newRepDiaTxt3 = "<strong style='color:78be48; font-size:200%'>.</strong> <strong>Sales Person:</strong>  \"Would you mind me taking a quick look? If you have a "
-								+ "few minutes, I’d like to see if I can diagnose the issue here with you.\"";
-		
-		
-		String newRepDiaTxt4 = "<strong style='color:78be48; font-size:200%'>.</strong> <strong>Sales Person:</strong> At this point you may do the best to your"
-				+ " ability to diagnose any possible issues occurring with the computer and quote customer more than likely pricing scenarios and "
-				+ "retrieve approvals for possible outcomes. You can continue with small talk like questions \"How’s your day been?\""
-				+ " \"Is this the first time your computer crashed?\" \"Has your computer been liquid damaged and if yes what areas of the computer?\"";
-		
-		
-		String newRepDiaTxt5 = "<strong style='color:78be48; font-size:200%'>.</strong> <strong>Sales Person:</strong> \"I can bring in your computer to verify the "
-				+ "diagnostics, turnaround time is typically 2-3 days to complete the repair.\"";  
+		createHeader("DIALOGUE FOR NEW REPAIR", newRepDia);		
+		fillComponentContent("new_repair_dialogue.html", newRepDia, "FOLLOW WALK-IN TEMPLATE", "walkin_work_order_screen");
 
-		String newRepDiaTxt6 = "<strong style='color:78be48; font-size:200%'>.</strong> <strong>Sales Person:</strong> \"Thank you for being so patient,  I will need a few more minutes to get all the notes down for our technicians.\"";
-		
-		String newRepDiaTxt7 = "<strong style='color:78be48; font-size:200%'>.</strong> <strong>Sales Person:</strong> Have customer sign legal contract, remind customer to bring photo ID for pick up.";
-
-		try {
-			//. Note that initially, newRepDiaContentDoc is empty.
-			//. If you're gonna read HTML from a file, perhaps you should loop through the file's contents line by line while inserting
-			//  each line into the third argument...
-			newRepDiaContentEK.insertHTML(newRepDiaContentDoc, newRepDiaContentDoc.getLength(), newRepDiaTxt1, 0, 0, null);			
-			newRepDiaContentEK.insertHTML(newRepDiaContentDoc, newRepDiaContentDoc.getLength(), newRepDiaTxt2, 0, 0, null);
-			newRepDiaContentEK.insertHTML(newRepDiaContentDoc, newRepDiaContentDoc.getLength(), newRepDiaTxt3, 0, 0, null);
-			newRepDiaContentEK.insertHTML(newRepDiaContentDoc, newRepDiaContentDoc.getLength(), newRepDiaTxt4, 0, 0, null);
-			newRepDiaContentEK.insertHTML(newRepDiaContentDoc, newRepDiaContentDoc.getLength(), newRepDiaTxt5, 0, 0, null);
-			newRepDiaContentEK.insertHTML(newRepDiaContentDoc, newRepDiaContentDoc.getLength(), newRepDiaTxt6, 0, 0, null);
-			newRepDiaContent.insertComponent(toWalkInWOBtn); //Occurs at 6th dialog line. If this were in a loop, perhaps you can say something like if i == 6?
-			newRepDiaContentEK.insertHTML(newRepDiaContentDoc, newRepDiaContentDoc.getLength(), newRepDiaTxt7, 0, 0, null);
-		} catch (BadLocationException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-		JScrollPane newRepDiaContentScroll = new JScrollPane(newRepDiaContent);
-		//newRepDiaTxtScroll.setBorder(null);
-		
-		//newRepDiaTxtScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
-		//newRepDiaTxtScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS); 
-		newRepDia.add(newRepDiaContentScroll, "push, grow");
-		*/
 		
 		// === WALK-IN WORK ORDER CONFIGURATIONS ===
 		walkinWO.setBackground(Color.WHITE);
@@ -220,58 +136,15 @@ public class Handbook {
 		workCmpl.setBackground(Color.WHITE);
 		workCmpl.setLayout(new MigLayout());
 		createHeader("WORK COMPLETED UPDATE", workCmpl);
-		fillComponentContent("work_completed_text.html", workCmpl, "FOLLOW DIALOGUE FOR APPROVAL", "8");
-		
-		/*
-		//Configure JTextPane() for content:
-		JTextPane workCmplContent = new JTextPane();			
-		workCmplContent.setEditable(false);
-		workCmplContent.setContentType("text/html");
-		
-		//Make button to other page and set ActionListener
-		JButton toApprDiaBtn = new JButton("FOLLOW DIALOGUE FOR APPROVAL");
-		toApprDiaBtn.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				mainScreenCl.show(mainScreen, "8");
-			}
-		});
-		
-		//Make HTMLDocument
-		HTMLDocument workCmplContentDoc = (HTMLDocument)workCmplContent.getDocument();
-		HTMLEditorKit workCmplContentEK = (HTMLEditorKit)workCmplContent.getEditorKit();
-		
-		//Make Strings
-		String workCmplTxt1 = "<strong>Examples:</strong>";
-		String workCmplTxt2 = "<strong style='color:78be48; font-size:200%'>.</strong> Customers (part) was found to be (defective, liquid damaged, not functional) and need of (replacement or repair).";
-		String workCmplTxt3 = "<strong style='color:78be48; font-size:200%'>.</strong> (part1), (part2), (part3) would also need to be replaced to complete the repair.";
-		String workCmplTxt4 = "<strong style='color:78be48; font-size:200%'>.</strong> Parts are: (in stock or not in stock) Estimated turnaround time __/__/__.";
-		
-		//Insert into HTMLDocument
-		try {
-			workCmplContentEK.insertHTML(workCmplContentDoc, workCmplContentDoc.getLength(), workCmplTxt1, 0, 0, null);			
-			workCmplContentEK.insertHTML(workCmplContentDoc, workCmplContentDoc.getLength(), workCmplTxt2, 0, 0, null);			
-			workCmplContentEK.insertHTML(workCmplContentDoc, workCmplContentDoc.getLength(), workCmplTxt3, 0, 0, null);			
-			workCmplContentEK.insertHTML(workCmplContentDoc, workCmplContentDoc.getLength(), workCmplTxt4, 0, 0, null);			
-			workCmplContent.insertComponent(toApprDiaBtn);
-		} catch (BadLocationException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		fillComponentContent("work_completed_text.html", workCmpl, "FOLLOW DIALOGUE FOR APPROVAL", "approval_dialogue_screen");
 
-		//Make JScrollPane to contain content
-		JScrollPane workCmplContentScroll = new JScrollPane(workCmplContent);
-		
-		//Add JScrollPant onto JPanel for this screen
-		workCmpl.add(workCmplContentScroll, "push, grow");
-		*/
-		
 		
 		// === PICK-UP DIALOG CONFIGURATIONS ===
 		pickUpDia.setBackground(Color.WHITE);
 		pickUpDia.setLayout(new MigLayout());
 		createHeader("DIALOGUE FOR PICK-UP", pickUpDia);
 		fillComponentContent("pickup_dialogue.html", pickUpDia, "FOLLOW PICK-UP SIGNATURE", "12");
+		
 		
 		// === COMPANY WORK ORDER CONFIGURATIONS ===
 		cmpnyWO.setBackground(Color.WHITE);
@@ -291,6 +164,7 @@ public class Handbook {
 		apprDia.setBackground(Color.WHITE);
 		apprDia.setLayout(new MigLayout());
 		createHeader("DIALOGUE FOR APPROVAL", apprDia);
+		fillComponentContent("approval_dialogue.html", apprDia, "FOLLOW CUSTOMER UPDATE TEXT", "customers_update_screen");
 		
 		
 		// === DROP-OFF SIGNATURE CONFIGURATIONS ===
@@ -304,46 +178,41 @@ public class Handbook {
 		cmplRpr.setBackground(Color.WHITE);
 		cmplRpr.setLayout(new MigLayout());
 		createHeader("COMPLETE REPAIR TEXT", cmplRpr);
+		fillComponentContent("complete_repair_text.html", cmplRpr, 
+				"FOLLOW DIALOGUE FOR REPAIR COMPLETION UPDATE", "repair_complete_dialogue_screen");
 		
 		
 		// === REPAIR COMPLETE DIALOG CONFIGURATIONS ===
 		repComDia.setBackground(Color.WHITE);
 		repComDia.setLayout(new MigLayout());
 		createHeader("DIALOGUE REPAIR COMPLETION", repComDia);
+		fillComponentContent("repair_completion_dialogue.html", repComDia,
+				"FOLLOW COMPLETE REPAIR", "complete_repair_screen");
 		
 		
 		// === PICK-UP SIGNATURE CONFIGURATIONS ===
 		pUSig.setBackground(Color.WHITE);
 		pUSig.setLayout(new MigLayout());
 		createHeader("PICK UP SIGNATURE", pUSig);
-		fillBasicContent("pick_up_sig.html", pUSig);
+		fillBasicContent("pickup_sig.html", pUSig);
 		
 		
 		// === MAIN MENU SCREEN CONFIGURATIONS ===
-		//. If a screen you get to from a button (screen A) does not lead to another screen, then screen A can simply
-		//  be a JPanel that is set with a CardLayout.
-		//. If a screen you get to from a button (screen A) leads to another screen (screen B), then screen A should be
-		//  a JPanel that is set with another CardLayout object. On that JPanel will be another JPanel that has the MigLayout.
-		//    - If a screen is labeled with "2" and this screen leads to another screen, that other screen should be labeled "2a"
-		//    - NO. This didn't seem to work. Java didn't let you do that. Since Screen B happened to be a screen that you could 
-		//		get from the main menu, you could simply use the CardLayout that was already set on the main menu -- no need to 
-		//		set another CardLayout on on Screen A to house Screen B. If you really wanted that arrangement, then you would have 
-		//		need to create a new copy of Screen B...but what a waste, right?
 		mainScreen.setLayout(mainScreenCl);
-		mainScreen.add(mainMenu, "1");
-		mainScreen.add(newRepDia, "2");
-		mainScreen.add(walkinWO, "3");
-		mainScreen.add(workCmpl, "4");
-		mainScreen.add(pickUpDia, "5");
-		mainScreen.add(cmpnyWO, "6");
-		mainScreen.add(cusUpdate, "7");
-		mainScreen.add(apprDia, "8");
-		mainScreen.add(dOSig, "9");
-		mainScreen.add(cmplRpr, "10");
-		mainScreen.add(repComDia, "11");
-		mainScreen.add(pUSig, "12");
+		mainScreen.add(mainMenu, "main_menu_screen");
+		mainScreen.add(newRepDia, "new_repair_dialogue_screen");
+		mainScreen.add(walkinWO, "walkin_work_order_screen");
+		mainScreen.add(workCmpl, "work_completed_screen");
+		mainScreen.add(pickUpDia, "pickup_dialogue_screen");
+		mainScreen.add(cmpnyWO, "company_work_order_screen");
+		mainScreen.add(cusUpdate, "customers_update_screen");
+		mainScreen.add(apprDia, "approval_dialogue_screen");
+		mainScreen.add(dOSig, "drop_off_signature_screen");
+		mainScreen.add(cmplRpr, "complete_repair_screen");
+		mainScreen.add(repComDia, "repair_complete_dialogue_screen");
+		mainScreen.add(pUSig, "pickup_signature_screen");
 
-		mainScreenCl.show(mainScreen, "1"); //Make the main menu (labeled as "1") show up first as part of the Card Layout.
+		mainScreenCl.show(mainScreen, "main_menu_screen"); //Make the main menu (labeled as "1") show up first as part of the Card Layout.
 		
 		// === CLEVERTECH LOGO CONFIGURATIONS ===
 		logo.setBackground(Color.WHITE);
@@ -398,68 +267,68 @@ public class Handbook {
 		//MAIN MENU BUTTONS:
 		newRepDiaBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				mainScreenCl.show(mainScreen, "2");
-				//^Read this as: For mainScreen, show the (JPanel) component labeled as "2"
+				mainScreenCl.show(mainScreen, "new_repair_dialogue_screen");
+				//^Read this as: For mainScreen, show the (JPanel) component labeled as "new_repair_dialogue_screen"
 			}
 		});
 		
 		walkinWOBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				mainScreenCl.show(mainScreen, "3");
+				mainScreenCl.show(mainScreen, "walkin_work_order_screen");
 			}
 		});
 		
 		workCmplBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				mainScreenCl.show(mainScreen, "4");
+				mainScreenCl.show(mainScreen, "work_completed_screen");
 			}
 		});
 		
 		pickUpDiaBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				mainScreenCl.show(mainScreen, "5");
+				mainScreenCl.show(mainScreen, "pickup_dialogue_screen");
 			}
 		});
 		
 		cmpnyWOBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				mainScreenCl.show(mainScreen, "6");
+				mainScreenCl.show(mainScreen, "company_work_order_screen");
 			}
 		});
 		
 		cusUpdateBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				mainScreenCl.show(mainScreen, "7");
+				mainScreenCl.show(mainScreen, "customers_update_screen");
 			}
 		});
 		
 		apprDiaBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				mainScreenCl.show(mainScreen, "8");
+				mainScreenCl.show(mainScreen, "approval_dialogue_screen");
 			}
 		});
 
 		dOSigBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				mainScreenCl.show(mainScreen, "9");
+				mainScreenCl.show(mainScreen, "drop_off_signature_screen");
 			}
 		});
 		
 		cmplRprBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				mainScreenCl.show(mainScreen, "10");
+				mainScreenCl.show(mainScreen, "complete_repair_screen");
 			}
 		});
 		
 		repComDiaBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				mainScreenCl.show(mainScreen, "11");
+				mainScreenCl.show(mainScreen, "repair_complete_dialogue_screen");
 			}
 		});
 		
 		pUSigBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				mainScreenCl.show(mainScreen, "12");
+				mainScreenCl.show(mainScreen, "pickup_signature_screen");
 			}
 		});
 				
@@ -517,7 +386,7 @@ public class Handbook {
 		JButton backBtn = new JButton("Back");
 		backBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				mainScreenCl.show(mainScreen, "1");
+				mainScreenCl.show(mainScreen, "main_menu_screen");
 			}
 		});
 		
