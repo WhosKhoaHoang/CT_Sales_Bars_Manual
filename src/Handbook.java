@@ -1,8 +1,12 @@
+/*
+ * A class that represents a CleverTech Handbook
+ * @author Khoa Hoang
+ */
+
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
 import javax.swing.text.BadLocationException;
-import javax.swing.text.html.HTML;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLEditorKit;
 
@@ -10,7 +14,6 @@ import org.jdesktop.swingx.border.DropShadowBorder;
 
 import java.awt.CardLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Insets;
@@ -27,7 +30,11 @@ import java.util.List;
 
 import net.miginfocom.swing.MigLayout;
 
+//TODO: Encapsulate code
+//TODO: Get images and text file contents in your code as RESOURCES, not as simple Images or Files
 //TODO: Consider changing hard-coded values!
+//TODO: Add Event Listeners for keyboard navigation
+//TODO: Establish Event Listeners for copying text
 
 public class Handbook {
 	
@@ -39,7 +46,6 @@ public class Handbook {
 	private JPanel logo = new CTLogo();
 	private JPanel btnArea = new JPanel();
 	
-	//private JPanel newRepDiaBase = new JPanel(); //Do I even need this?
 	private JPanel newRepDia = new JPanel();
 	private JPanel walkinWO = new JPanel();
 	private JPanel workCmpl = new JPanel();
@@ -51,9 +57,9 @@ public class Handbook {
 	private JPanel cmplRpr = new JPanel();
 	private JPanel repComDia = new JPanel();
 	private JPanel pUSig = new JPanel();
+	private JPanel techKB = new JPanel();
 	
-	//Main Menu Buttons (have individual variables for them for when
-	//we need to add action listeners):
+	//Main Menu Buttons (have individual variables for them for when we need to add action listeners):
 	private JButton newRepDiaBtn = new JButton("DIALOGUE FOR NEW REPAIR");
 	private JButton walkinWOBtn= new JButton("WALK-IN WORK ORDER");
 	private JButton workCmplBtn = new JButton("WORK COMPLETED TEXT");
@@ -65,17 +71,17 @@ public class Handbook {
 	private JButton cmplRprBtn = new JButton("COMPLETE REPAIR TEXT");
 	private JButton repComDiaBtn = new JButton("DIALOGUE REPAIR COMPLETE");
 	private JButton pUSigBtn = new JButton("PICK-UP SIGNATURE");
+	private JButton techKBBtn = new JButton("TECHNICIAN KNOWLEDGE BASE");
 	//This ArrayList is for when we need to add all the buttons onto the main menu. More concise code
 	//for that can be written with this ArrayList.
 	private List<JButton> mainMenuBtns = new ArrayList<JButton>(Arrays.asList(newRepDiaBtn, walkinWOBtn,
 			workCmplBtn, pickUpDiaBtn, cmpnyWOBtn, cusUpdateBtn, apprDiaBtn, dOSigBtn, cmplRprBtn,
-			repComDiaBtn, pUSigBtn));
+			repComDiaBtn, pUSigBtn, techKBBtn));
 	
 	private CardLayout mainScreenCl = new CardLayout(); //Will use a CardLayout to handle screen changing
-	private CardLayout newRepDiaCl = new CardLayout();
 
 	/**
-	 * Constructor
+	 * Creates a new Handbook.
 	 */
 	public Handbook() {		
 		//FOR TESTING OUT BORDERS
@@ -115,70 +121,67 @@ public class Handbook {
 		mainMenu.setBackground(Color.WHITE);
 		mainMenu.setLayout(new MigLayout("align 50% 50%, gapy 10", "[center][center][center]"));
 		//The first 50% after align establishes horizontal centering and the second 50% establishes vertical centering
-				
-		//TODO: Try putting the dialogue into a separate html file and reading it into the program...
-		//TODO: NOTE THAT YOU NEED TO ADD EVENT LISTENERS to JTextPane if you want to allow user to copy and paste!!!
-		
+						
 		newRepDia.setLayout(new MigLayout("", "", "[][]"));
 		newRepDia.setBackground(Color.WHITE);
 		createHeader("DIALOGUE FOR NEW REPAIR", newRepDia);		
-		fillComponentContent("new_repair_dialogue.html", newRepDia, "FOLLOW WALK-IN TEMPLATE", "walkin_work_order_screen");
+		fillComponentContent("screen_content/new_repair_dialogue.html", newRepDia, "FOLLOW WALK-IN TEMPLATE", "walkin_work_order_screen");
 
 		
 		// === WALK-IN WORK ORDER CONFIGURATIONS ===
 		walkinWO.setBackground(Color.WHITE);
 		walkinWO.setLayout(new MigLayout());
 		createHeader("WALK-IN WORK ORDER TEMPLATE", walkinWO); 
-		fillBasicContent("walkinWO.html", walkinWO);
+		fillBasicContent("screen_content/walkinWO.html", walkinWO);
 
 		
 		// === WORK COMPLETE CONFIGURATIONS ===
 		workCmpl.setBackground(Color.WHITE);
 		workCmpl.setLayout(new MigLayout());
 		createHeader("WORK COMPLETED UPDATE", workCmpl);
-		fillComponentContent("work_completed_text.html", workCmpl, "FOLLOW DIALOGUE FOR APPROVAL", "approval_dialogue_screen");
+		fillComponentContent("screen_content/work_completed_text.html", workCmpl, "FOLLOW DIALOGUE FOR APPROVAL", "approval_dialogue_screen");
 
 		
 		// === PICK-UP DIALOG CONFIGURATIONS ===
 		pickUpDia.setBackground(Color.WHITE);
 		pickUpDia.setLayout(new MigLayout());
 		createHeader("DIALOGUE FOR PICK-UP", pickUpDia);
-		fillComponentContent("pickup_dialogue.html", pickUpDia, "FOLLOW PICK-UP SIGNATURE", "pickup_signature_screen");
+		fillComponentContent("screen_content/pickup_dialogue.html", pickUpDia, "FOLLOW PICK-UP SIGNATURE", "pickup_signature_screen");
 		
 		
 		// === COMPANY WORK ORDER CONFIGURATIONS ===
 		cmpnyWO.setBackground(Color.WHITE);
 		cmpnyWO.setLayout(new MigLayout());
 		createHeader("COMPANY WORK ORDER TEMPLATE", cmpnyWO);
-		fillBasicContent("company_WO.html", cmpnyWO);
+		fillBasicContent("screen_content/company_WO.html", cmpnyWO);
 		
 
 		// === CUSTOMERS UPDATE CONFIGURATIONS ===
 		cusUpdate.setBackground(Color.WHITE);
 		cusUpdate.setLayout(new MigLayout());
 		createHeader("CUSTOMERS UPDATE TEXT", cusUpdate);
-		fillBasicContent("customers_update_text.html", cusUpdate);
+		fillBasicContent("screen_content/customers_update_text.html", cusUpdate);
 		
 		
 		// === APPROVAL DIALOG CONFIGURATIONS ===
 		apprDia.setBackground(Color.WHITE);
 		apprDia.setLayout(new MigLayout());
 		createHeader("DIALOGUE FOR APPROVAL", apprDia);
-		fillComponentContent("approval_dialogue.html", apprDia, "FOLLOW CUSTOMER UPDATE TEXT", "customers_update_screen");
+		fillComponentContent("screen_content/approval_dialogue.html", apprDia, "FOLLOW CUSTOMER UPDATE TEXT", "customers_update_screen");
 		
 		
 		// === DROP-OFF SIGNATURE CONFIGURATIONS ===
 		dOSig.setBackground(Color.WHITE);
 		dOSig.setLayout(new MigLayout());
 		createHeader("DROP-OFF SIGNATURE", dOSig);
-		fillBasicContent("drop_off_sig.html", dOSig);
+		fillBasicContent("screen_content/drop_off_sig.html", dOSig);
 		
 		
 		// === COMPLETE REPAIR CONFIGURATIONS ===
 		cmplRpr.setBackground(Color.WHITE);
 		cmplRpr.setLayout(new MigLayout());
 		createHeader("COMPLETE REPAIR TEXT", cmplRpr);
-		fillComponentContent("complete_repair_text.html", cmplRpr, 
+		fillComponentContent("screen_content/complete_repair_text.html", cmplRpr, 
 				"FOLLOW DIALOGUE FOR REPAIR COMPLETION UPDATE", "repair_complete_dialogue_screen");
 		
 		
@@ -186,7 +189,7 @@ public class Handbook {
 		repComDia.setBackground(Color.WHITE);
 		repComDia.setLayout(new MigLayout());
 		createHeader("DIALOGUE REPAIR COMPLETION", repComDia);
-		fillComponentContent("repair_completion_dialogue.html", repComDia,
+		fillComponentContent("screen_content/repair_completion_dialogue.html", repComDia,
 				"FOLLOW COMPLETE REPAIR", "complete_repair_screen");
 		
 		
@@ -194,7 +197,13 @@ public class Handbook {
 		pUSig.setBackground(Color.WHITE);
 		pUSig.setLayout(new MigLayout());
 		createHeader("PICK UP SIGNATURE", pUSig);
-		fillBasicContent("pickup_sig.html", pUSig);
+		fillBasicContent("screen_content/pickup_sig.html", pUSig);
+		
+		
+		// === TECHNICIAN KNOWLEDGE BASE CONFIGURATIONS ===
+		techKB.setBackground(Color.WHITE);
+		techKB.setLayout(new MigLayout());
+		createHeader("TECHNICIAN KNOWLEDGE BASE", techKB);
 		
 		
 		// === MAIN MENU SCREEN CONFIGURATIONS ===
@@ -211,12 +220,15 @@ public class Handbook {
 		mainScreen.add(cmplRpr, "complete_repair_screen");
 		mainScreen.add(repComDia, "repair_complete_dialogue_screen");
 		mainScreen.add(pUSig, "pickup_signature_screen");
+		mainScreen.add(techKB, "technician_knowledge_base_screen");
 
 		mainScreenCl.show(mainScreen, "main_menu_screen"); //Make the main menu (labeled as "1") show up first as part of the Card Layout.
+		
 		
 		// === CLEVERTECH LOGO CONFIGURATIONS ===
 		logo.setBackground(Color.WHITE);
 		mainMenu.add(logo, "wrap");
+		
 		
 		
 		// === OPERATIONS MANUAL TEXT CONFIGURATIONS===
@@ -243,7 +255,7 @@ public class Handbook {
 		//. I could probably wrap all of the following up in a for loop...
 		//. I have a feeling there's a way you can see the size of the buttons in the constructor for the MigLayout...
 		for (int i = 0, curCol = 0; i < mainMenuBtns.size(); i++, curCol++) {
-			prepButton(mainMenuBtns.get(i));
+			configButton(mainMenuBtns.get(i));
 			if (curCol == 0) { 
 				if (i == 0) {
 					btnArea.add(mainMenuBtns.get(i), "width " + String.valueOf(700/3) + ", height " + String.valueOf(300/10));
@@ -331,7 +343,12 @@ public class Handbook {
 				mainScreenCl.show(mainScreen, "pickup_signature_screen");
 			}
 		});
-				
+		
+		techKBBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				mainScreenCl.show(mainScreen, "technician_knowledge_base_screen");
+			}
+		});		
 		
 		// === JFRAME CONFIGRATIONS ===
 		frame.setResizable(false); //Resizing destroys the layout. Disable for now.
@@ -351,11 +368,10 @@ public class Handbook {
 
 
 	/**
-	 * Helper Method
-	 * @param btn
-	 * @param btnArea
+	 * A helper method that configures a Button for placement on the main menu.
+	 * @param btn The button to be placed
 	 */
-	private void prepButton(JButton btn) {
+	private void configButton(JButton btn) {
 		btn.setFont(new Font("Arial", Font.BOLD, 13));
 		btn.setMargin(new Insets(7, 7, 7, 7)); //Perhaps inset values should NOT be hard coded?
 		btn.setForeground(Color.WHITE);
@@ -368,9 +384,9 @@ public class Handbook {
 	
 	
 	/**
-	 * Helper method
-	 * @param headerTxt
-	 * @param panel (must be set with MigLayout)
+	 * A helper method that creates the header for a content screen.
+	 * @param headerTxt The text to put on the header
+	 * @param panel The JPanel representing the content screen (must be set with MigLayout)
 	 */
 	private void createHeader(String headerTxt, JPanel panel) {
 		JPanel header = new JPanel();
@@ -381,8 +397,6 @@ public class Handbook {
 		headerLbl.setFont(new Font("Helvetica", Font.BOLD, 25));
 		headerLbl.setForeground(Color.WHITE);
 		
-		//Maybe I can create the back button in here and add the Action Listener in here
-		//since I can access mainScreenCl from here...
 		JButton backBtn = new JButton("Back");
 		backBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -398,9 +412,9 @@ public class Handbook {
 	
 	
 	/**
-	 * A helper method.
-	 * @param fileName Name of the file to read content from
-	 * @param panel Must be set with a MigLayout
+	 * A helper method that fills in the content for a content screen.
+	 * @param fileName Name of the file containing the screen's content
+	 * @param panel The JPanel representing the content screen (must be set with a MigLayout)
 	 */
 	private void fillBasicContent(String fileName, JPanel panel) {
 		JTextPane content = new JTextPane();		
@@ -436,18 +450,11 @@ public class Handbook {
 	}
 	
 	
-	private void fillComponentContent(String fileName, JPanel panel, String btnTxt, final String jumpToPgLbl) {
-		
-		//Configure JTextPane() for content:
+	private void fillComponentContent(String fileName, JPanel panel, String btnTxt, final String jumpToPgLbl) {		
 		JTextPane content = new JTextPane();			
 		content.setEditable(false);
 		content.setContentType("text/html");
 		
-		//Make button to other page and set ActionListener
-		//- In the method, use the provided componentLst? But how am I going to handle setting of the ActionListener?
-		//    For now, let's just pass in a single button...but for future reference, maybe you can actually have each 
-		//	  component in componentLst be paired with the string description of the page
-		//    that the component would jump to...
 		/*
 		//If componentLst were an ArrayList of pairs...(Note that you'd have to make a Pair class of your own! Java doesn't have one)
 		for (int i = 0; i < componentLst.size(); i++) {
@@ -482,7 +489,6 @@ public class Handbook {
         }
         catch(FileNotFoundException e) { e.printStackTrace(); }
         catch(IOException e) { e.printStackTrace();}
-		
 		
 		//Make HTMLDocument and HTMLEditorKit
 		HTMLDocument contentDoc = (HTMLDocument)content.getDocument();
