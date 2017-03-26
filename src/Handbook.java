@@ -405,7 +405,6 @@ public class Handbook {
 		
 		header.add(backBtn, "wrap");
 		header.add(headerLbl, "gaptop 10"); //HARD-CODED VALUE
-		
 		panel.add(header, "height 100, pushx, growx, wrap"); //HARD-CODED VALUE. Setting values for Header here.
 	}
 	
