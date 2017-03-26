@@ -21,9 +21,12 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -57,7 +60,6 @@ public class Handbook {
 	private JPanel cmplRpr = new JPanel();
 	private JPanel repComDia = new JPanel();
 	private JPanel pUSig = new JPanel();
-	private JPanel techKB = new JPanel();
 	
 	//Main Menu Buttons (have individual variables for them for when we need to add action listeners):
 	private JButton newRepDiaBtn = new JButton("DIALOGUE FOR NEW REPAIR");
@@ -71,15 +73,15 @@ public class Handbook {
 	private JButton cmplRprBtn = new JButton("COMPLETE REPAIR TEXT");
 	private JButton repComDiaBtn = new JButton("DIALOGUE REPAIR COMPLETE");
 	private JButton pUSigBtn = new JButton("PICK-UP SIGNATURE");
-	private JButton techKBBtn = new JButton("TECHNICIAN KNOWLEDGE BASE");
 	//This ArrayList is for when we need to add all the buttons onto the main menu. More concise code
 	//for that can be written with this ArrayList.
 	private List<JButton> mainMenuBtns = new ArrayList<JButton>(Arrays.asList(newRepDiaBtn, walkinWOBtn,
 			workCmplBtn, pickUpDiaBtn, cmpnyWOBtn, cusUpdateBtn, apprDiaBtn, dOSigBtn, cmplRprBtn,
-			repComDiaBtn, pUSigBtn, techKBBtn));
+			repComDiaBtn, pUSigBtn));
 	
 	private CardLayout mainScreenCl = new CardLayout(); //Will use a CardLayout to handle screen changing
 
+	
 	/**
 	 * Creates a new Handbook.
 	 */
@@ -107,23 +109,39 @@ public class Handbook {
         
 		//The following try/catch block is needed so that the GUI's look and feel appears similar 
 		//across different operating systems.
-		try {
-	        UIManager.setLookAndFeel( UIManager.getCrossPlatformLookAndFeelClassName() );
-		} 
-		catch (Exception e) {
-			e.printStackTrace();
-		}
+		try { UIManager.setLookAndFeel( UIManager.getCrossPlatformLookAndFeelClassName() ); } 
+		catch (Exception e) { e.printStackTrace(); }
 		
-		
+		//configScreens();
 		
 		// === MAIN MENU CONFIGURATIONS ===
 		//mainMenu.setBackground(Color.decode("0x121E31")); //for debugging
 		mainMenu.setBackground(Color.WHITE);
 		mainMenu.setLayout(new MigLayout("align 50% 50%, gapy 10", "[center][center][center]"));
 		//The first 50% after align establishes horizontal centering and the second 50% establishes vertical centering
+		
+		// === MAIN MENU SCREEN CONFIGURATIONS ===
+		mainScreen.setLayout(mainScreenCl);
+		mainScreen.add(mainMenu, "main_menu_screen");
+		mainScreen.add(newRepDia, "new_repair_dialogue_screen");
+		mainScreen.add(walkinWO, "walkin_work_order_screen");
+		mainScreen.add(workCmpl, "work_completed_screen");
+		mainScreen.add(pickUpDia, "pickup_dialogue_screen");
+		mainScreen.add(cmpnyWO, "company_work_order_screen");
+		mainScreen.add(cusUpdate, "customers_update_screen");
+		mainScreen.add(apprDia, "approval_dialogue_screen");
+		mainScreen.add(dOSig, "drop_off_signature_screen");
+		mainScreen.add(cmplRpr, "complete_repair_screen");
+		mainScreen.add(repComDia, "repair_complete_dialogue_screen");
+		mainScreen.add(pUSig, "pickup_signature_screen");
+
+		mainScreenCl.show(mainScreen, "main_menu_screen"); 
+		//Make the main menu (labeled as "main_menu_screen") show up first as part of the Card Layout.
 						
-		newRepDia.setLayout(new MigLayout("", "", "[][]"));
+		
+		// === NEW REPAIR DIALOGUE SCREEN CONFIGURATIONS ===
 		newRepDia.setBackground(Color.WHITE);
+		newRepDia.setLayout(new MigLayout());
 		createHeader("DIALOGUE FOR NEW REPAIR", newRepDia);		
 		fillComponentContent("screen_content/new_repair_dialogue.html", newRepDia, "FOLLOW WALK-IN TEMPLATE", "walkin_work_order_screen");
 
@@ -200,30 +218,6 @@ public class Handbook {
 		fillBasicContent("screen_content/pickup_sig.html", pUSig);
 		
 		
-		// === TECHNICIAN KNOWLEDGE BASE CONFIGURATIONS ===
-		techKB.setBackground(Color.WHITE);
-		techKB.setLayout(new MigLayout());
-		createHeader("TECHNICIAN KNOWLEDGE BASE", techKB);
-		
-		
-		// === MAIN MENU SCREEN CONFIGURATIONS ===
-		mainScreen.setLayout(mainScreenCl);
-		mainScreen.add(mainMenu, "main_menu_screen");
-		mainScreen.add(newRepDia, "new_repair_dialogue_screen");
-		mainScreen.add(walkinWO, "walkin_work_order_screen");
-		mainScreen.add(workCmpl, "work_completed_screen");
-		mainScreen.add(pickUpDia, "pickup_dialogue_screen");
-		mainScreen.add(cmpnyWO, "company_work_order_screen");
-		mainScreen.add(cusUpdate, "customers_update_screen");
-		mainScreen.add(apprDia, "approval_dialogue_screen");
-		mainScreen.add(dOSig, "drop_off_signature_screen");
-		mainScreen.add(cmplRpr, "complete_repair_screen");
-		mainScreen.add(repComDia, "repair_complete_dialogue_screen");
-		mainScreen.add(pUSig, "pickup_signature_screen");
-		mainScreen.add(techKB, "technician_knowledge_base_screen");
-
-		mainScreenCl.show(mainScreen, "main_menu_screen"); //Make the main menu (labeled as "1") show up first as part of the Card Layout.
-		
 		
 		// === CLEVERTECH LOGO CONFIGURATIONS ===
 		logo.setBackground(Color.WHITE);
@@ -239,8 +233,6 @@ public class Handbook {
 		
 		
 		// === BUTTON AREA CONFIGURATIONS ===
-		//gbc.insets = new Insets(15, 15, 15, 15); //Adjust insets to modify a component's margins
-		//gbc.ipady = 30; //Adjust ipadx or ipady to modify a component's padding
 		btnArea.setLayout(new MigLayout());
 		btnArea.setPreferredSize(new Dimension(700, 300)); //HARD-CODED DIMENSIONS
 		//btnArea.setBackground(Color.decode("0x8FC967")); //For testing
@@ -251,9 +243,34 @@ public class Handbook {
 		mainMenu.add(btnArea);
 		
 		
-		//Start adding buttons inside btnArea...
-		//. I could probably wrap all of the following up in a for loop...
-		//. I have a feeling there's a way you can see the size of the buttons in the constructor for the MigLayout...
+		//Add buttons inside btnArea...
+		addMainMenuBtns();
+		
+		// === CODE FOR HANDLING SCREEN CHANGING FROM THE MAIN MENU ===
+		addMainMenuBtnALs();
+		
+		
+		// === JFRAME CONFIGRATIONS ===
+		frame.setResizable(false); //Resizing destroys the layout. Disable for now.
+	    frame.getContentPane().setPreferredSize(new Dimension(800, 500)); //HARD-CODED DIMENSIONS
+		frame.add(mainScreen);
+		
+		//Boiler-plate code:
+		frame.pack();
+		//Be sure to write the following two lines AFTER you've packed the frame. Writing them before packing
+		//doesn't center the GUI correctly!
+		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+		frame.setLocation(dim.width/2-frame.getSize().width/2, dim.height/2-frame.getSize().height/2);
+		
+		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		frame.setVisible(true);
+	}
+
+	
+	/**
+	 * A helper method that adds buttons to the main menu.
+	 */
+	private void addMainMenuBtns() {
 		for (int i = 0, curCol = 0; i < mainMenuBtns.size(); i++, curCol++) {
 			configButton(mainMenuBtns.get(i));
 			if (curCol == 0) { 
@@ -271,12 +288,14 @@ public class Handbook {
 				btnArea.add(mainMenuBtns.get(i), "width " + String.valueOf(700/3) + ", height " + String.valueOf(300/10) + ", gap " + String.valueOf(700/70) + ", wrap");
 				curCol = -1; //Don't reset to 0 because curCol is incremented at the end of the iteration!!!
 			}
-		}
-		
-		
-		// === CODE FOR HANDLING SCREEN CHANGING FROM THE MAIN MENU ===
-		
-		//MAIN MENU BUTTONS:
+		}	
+	}
+	
+	
+	/**
+	 * A helper method that adds Action Listeners to the main menu's buttons.
+	 */
+	private void addMainMenuBtnALs() {
 		newRepDiaBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				mainScreenCl.show(mainScreen, "new_repair_dialogue_screen");
@@ -344,28 +363,8 @@ public class Handbook {
 			}
 		});
 		
-		techKBBtn.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				mainScreenCl.show(mainScreen, "technician_knowledge_base_screen");
-			}
-		});		
-		
-		// === JFRAME CONFIGRATIONS ===
-		frame.setResizable(false); //Resizing destroys the layout. Disable for now.
-	    frame.getContentPane().setPreferredSize(new Dimension(800, 500)); //HARD-CODED DIMENSIONS
-		frame.add(mainScreen);
-		
-		//Boiler-plate code:
-		frame.pack();
-		//Be sure to write the following two lines AFTER you've packed the frame. Writing them before packing
-		//doesn't center the GUI correctly!
-		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-		frame.setLocation(dim.width/2-frame.getSize().width/2, dim.height/2-frame.getSize().height/2);
-		
-		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		frame.setVisible(true);
 	}
-
+	
 
 	/**
 	 * A helper method that configures a Button for placement on the main menu.
@@ -422,7 +421,10 @@ public class Handbook {
 		content.setContentType("text/html");
 		
         try {
-            BufferedReader br = new BufferedReader(new FileReader(fileName));
+            //BufferedReader br = new BufferedReader(new FileReader(fileName));
+        	//It seems that FileReader doesn't look inside the file structure within the src folder...
+            BufferedReader br = new BufferedReader(new InputStreamReader(
+            		Main.class.getResourceAsStream(fileName), StandardCharsets.UTF_8));
             StringBuilder sb = new StringBuilder();
             String line = br.readLine();
             
@@ -466,7 +468,6 @@ public class Handbook {
 			}
 		}
 		*/
-		
 		JButton button = new JButton(btnTxt);
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -479,13 +480,16 @@ public class Handbook {
         List<String> lineLst = new ArrayList<String>();
         try {
 
-            BufferedReader bufferedReader = new BufferedReader(new FileReader(fileName));
-            
-            while((line = bufferedReader.readLine()) != null) {
+            //BufferedReader bufferedReader = new BufferedReader(new FileReader(fileName));
+        	//It seems that FileReader doesn't look inside the file structure within the src folder...
+            BufferedReader br = new BufferedReader(new InputStreamReader(
+            		Main.class.getResourceAsStream(fileName), StandardCharsets.UTF_8));
+
+            while((line = br.readLine()) != null) {
             	lineLst.add(line);
             }
             
-            bufferedReader.close();         
+            br.close();         
         }
         catch(FileNotFoundException e) { e.printStackTrace(); }
         catch(IOException e) { e.printStackTrace();}
