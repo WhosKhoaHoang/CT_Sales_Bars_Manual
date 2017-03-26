@@ -474,7 +474,7 @@ public class Handbook {
 			}
 		});
 		
-		//Make Strings...or in this method, you'd read each line in an HTML file		
+		//Read each line in an HTML file		
         String line = null;
         List<String> lineLst = new ArrayList<String>();
         try {
