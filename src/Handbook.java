@@ -18,14 +18,15 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Insets;
 import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,10 +35,18 @@ import java.util.List;
 import net.miginfocom.swing.MigLayout;
 
 //TODO: Encapsulate code
-//TODO: Get images and text file contents in your code as RESOURCES, not as simple Images or Files
 //TODO: Consider changing hard-coded values!
+//TODO: Establish Event Listeners for selecting and copying text
 //TODO: Add Event Listeners for keyboard navigation
-//TODO: Establish Event Listeners for copying text
+//TODO: Change the program's desktop and dock (for Macs) icon
+
+/*
+//Copy text to clipboard example:
+String myString = "This text will be copied into clipboard when running this code!";
+StringSelection stringSelection = new StringSelection(myString);
+Clipboard clpbrd = Toolkit.getDefaultToolkit().getSystemClipboard();
+clpbrd.setContents(stringSelection, null);
+*/
 
 public class Handbook {
 	
@@ -151,14 +160,16 @@ public class Handbook {
 		walkinWO.setLayout(new MigLayout());
 		createHeader("WALK-IN WORK ORDER TEMPLATE", walkinWO); 
 		fillBasicContent("screen_content/walkinWO.html", walkinWO);
-
+		addTextToCBBtn(walkinWO);
 		
+
 		// === WORK COMPLETE CONFIGURATIONS ===
 		workCmpl.setBackground(Color.WHITE);
 		workCmpl.setLayout(new MigLayout());
 		createHeader("WORK COMPLETED UPDATE", workCmpl);
 		fillComponentContent("screen_content/work_completed_text.html", workCmpl, "FOLLOW DIALOGUE FOR APPROVAL", "approval_dialogue_screen");
 
+		
 		
 		// === PICK-UP DIALOG CONFIGURATIONS ===
 		pickUpDia.setBackground(Color.WHITE);
@@ -167,18 +178,22 @@ public class Handbook {
 		fillComponentContent("screen_content/pickup_dialogue.html", pickUpDia, "FOLLOW PICK-UP SIGNATURE", "pickup_signature_screen");
 		
 		
+		
 		// === COMPANY WORK ORDER CONFIGURATIONS ===
 		cmpnyWO.setBackground(Color.WHITE);
 		cmpnyWO.setLayout(new MigLayout());
 		createHeader("COMPANY WORK ORDER TEMPLATE", cmpnyWO);
 		fillBasicContent("screen_content/company_WO.html", cmpnyWO);
+		addTextToCBBtn(cmpnyWO);
 		
-
+		
+		
 		// === CUSTOMERS UPDATE CONFIGURATIONS ===
 		cusUpdate.setBackground(Color.WHITE);
 		cusUpdate.setLayout(new MigLayout());
 		createHeader("CUSTOMERS UPDATE TEXT", cusUpdate);
 		fillBasicContent("screen_content/customers_update_text.html", cusUpdate);
+		
 		
 		
 		// === APPROVAL DIALOG CONFIGURATIONS ===
@@ -188,11 +203,14 @@ public class Handbook {
 		fillComponentContent("screen_content/approval_dialogue.html", apprDia, "FOLLOW CUSTOMER UPDATE TEXT", "customers_update_screen");
 		
 		
+		
 		// === DROP-OFF SIGNATURE CONFIGURATIONS ===
 		dOSig.setBackground(Color.WHITE);
 		dOSig.setLayout(new MigLayout());
 		createHeader("DROP-OFF SIGNATURE", dOSig);
 		fillBasicContent("screen_content/drop_off_sig.html", dOSig);
+		addTextToCBBtn(dOSig);
+		
 		
 		
 		// === COMPLETE REPAIR CONFIGURATIONS ===
@@ -203,6 +221,7 @@ public class Handbook {
 				"FOLLOW DIALOGUE FOR REPAIR COMPLETION UPDATE", "repair_complete_dialogue_screen");
 		
 		
+		
 		// === REPAIR COMPLETE DIALOG CONFIGURATIONS ===
 		repComDia.setBackground(Color.WHITE);
 		repComDia.setLayout(new MigLayout());
@@ -211,11 +230,13 @@ public class Handbook {
 				"FOLLOW COMPLETE REPAIR", "complete_repair_screen");
 		
 		
+		
 		// === PICK-UP SIGNATURE CONFIGURATIONS ===
 		pUSig.setBackground(Color.WHITE);
 		pUSig.setLayout(new MigLayout());
 		createHeader("PICK UP SIGNATURE", pUSig);
 		fillBasicContent("screen_content/pickup_sig.html", pUSig);
+		addTextToCBBtn(pUSig);
 		
 		
 		
@@ -447,7 +468,7 @@ public class Handbook {
 				   contentScroll.getVerticalScrollBar().setValue(0);
 			   }
 			});
-		panel.add(contentScroll, "push, grow");
+		panel.add(contentScroll, "push, grow, wrap");
 	}
 	
 	
@@ -467,12 +488,21 @@ public class Handbook {
 			}
 		}
 		*/
+		
 		JButton button = new JButton(btnTxt);
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				mainScreenCl.show(mainScreen, jumpToPgLbl);  //mainScreenCl and mainScreen must be referred to in this actionListener
 			}
 		});
+		
+		/*
+		//Copy text to clipboard example:
+		String myString = "This text will be copied into clipboard when running this code!";
+		StringSelection stringSelection = new StringSelection(myString);
+		Clipboard clpbrd = Toolkit.getDefaultToolkit().getSystemClipboard();
+		clpbrd.setContents(stringSelection, null);
+		*/
 		
 		//Read each line in an HTML file		
         String line = null;
@@ -496,6 +526,8 @@ public class Handbook {
 		//Make HTMLDocument and HTMLEditorKit
 		HTMLDocument contentDoc = (HTMLDocument)content.getDocument();
 		HTMLEditorKit contentEK = (HTMLEditorKit)content.getEditorKit();
+		
+		//Insert HTML into HTMLDocument
 		for (int i = 0; i < lineLst.size(); i++) {
 			if (lineLst.get(i).equals("<!--INSERT-->")) {
 				content.insertComponent(button);
@@ -514,10 +546,40 @@ public class Handbook {
 			}
 		}
 		
+		
 		//Make JScrollPane to contain content
 		JScrollPane contentScroll = new JScrollPane(content);
 		
 		//Add JScrollPant onto JPanel for this screen
 		panel.add(contentScroll, "push, grow");		
+	}
+	
+
+	/**
+	 * A helper method that adds a button to a panel for copying the panel's content text to
+	 * the OS clip board.
+	 * @param panel The panel with the content pane containing the text of interest
+	 */
+	private void addTextToCBBtn(final JPanel panel) {
+		JButton copyTxtBtn = new JButton("Copy text to clipboard");
+		panel.add(copyTxtBtn);
+		final int JSCROLLPANE_COMPONENT_INDEX = 1;
+		copyTxtBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				HtmlToText parser = new HtmlToText();
+				try {
+					JScrollPane sPane = (JScrollPane)panel.getComponent(JSCROLLPANE_COMPONENT_INDEX);
+					JViewport vPort = sPane.getViewport();
+					JTextPane tPane = (JTextPane)vPort.getView();
+				    parser.parse(new StringReader(tPane.getText()));
+				    
+					StringSelection stringSelection = new StringSelection(parser.getText());
+					Clipboard clpBrd = Toolkit.getDefaultToolkit().getSystemClipboard();
+					clpBrd.setContents(stringSelection, null);
+				} catch (IOException ee) {
+				  //handle exception
+				}
+			}
+		});
 	}
 }
