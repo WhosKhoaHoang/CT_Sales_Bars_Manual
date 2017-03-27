@@ -40,21 +40,13 @@ import net.miginfocom.swing.MigLayout;
 //TODO: Add Event Listeners for keyboard navigation
 //TODO: Change the program's desktop and dock (for Macs) icon
 
-/*
-//Copy text to clipboard example:
-String myString = "This text will be copied into clipboard when running this code!";
-StringSelection stringSelection = new StringSelection(myString);
-Clipboard clpbrd = Toolkit.getDefaultToolkit().getSystemClipboard();
-clpbrd.setContents(stringSelection, null);
-*/
-
 public class Handbook {
 	
 	private JFrame frame = new JFrame();
 	private JPanel mainScreen = new JPanel();
 	
 	private JPanel mainMenu = new JPanel();
-	private JLabel opManualTxt = new JLabel("Operations Manual");
+	private JLabel opManualTxt = new JLabel("Sales Bar Operations");
 	private JPanel logo = new CTLogo();
 	private JPanel btnArea = new JPanel();
 	
@@ -112,7 +104,6 @@ public class Handbook {
         shadow.setShowRightShadow(true);
         shadow.setShowBottomShadow(true);
         shadow.setShowTopShadow(true);
-        
         frame.getRootPane().setBorder(shadow);
         //frame.getRootPane().setBorder(BorderFactory.createMatteBorder(4, 4, 4, 4, Color.RED));        
         
@@ -153,7 +144,8 @@ public class Handbook {
 		newRepDia.setLayout(new MigLayout());
 		createHeader("DIALOGUE FOR NEW REPAIR", newRepDia);		
 		fillComponentContent("screen_content/new_repair_dialogue.html", newRepDia, "FOLLOW WALK-IN TEMPLATE", "walkin_work_order_screen");
-
+		
+		
 		
 		// === WALK-IN WORK ORDER CONFIGURATIONS ===
 		walkinWO.setBackground(Color.WHITE);
@@ -161,6 +153,16 @@ public class Handbook {
 		createHeader("WALK-IN WORK ORDER TEMPLATE", walkinWO); 
 		fillBasicContent("screen_content/walkinWO.html", walkinWO);
 		addTextToCBBtn(walkinWO);
+		
+		JPanel header = (JPanel)walkinWO.getComponent(0);
+		JButton backToNewRepDia = new JButton("Back to New Repairs Dialogue");
+		backToNewRepDia.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				mainScreenCl.show(mainScreen, "new_repair_dialogue_screen");
+			}
+		});
+		header.add(backToNewRepDia, "cell 0 0");
+		
 		
 
 		// === WORK COMPLETE CONFIGURATIONS ===
@@ -288,6 +290,7 @@ public class Handbook {
 	}
 
 	
+	
 	/**
 	 * A helper method that adds buttons to the main menu.
 	 */
@@ -311,6 +314,7 @@ public class Handbook {
 			}
 		}	
 	}
+	
 	
 	
 	/**
@@ -386,6 +390,7 @@ public class Handbook {
 		
 	}
 	
+	
 
 	/**
 	 * A helper method that configures a Button for placement on the main menu.
@@ -403,6 +408,7 @@ public class Handbook {
 	}
 	
 	
+	
 	/**
 	 * A helper method that creates the header for a content screen.
 	 * @param headerTxt The text to put on the header
@@ -417,7 +423,7 @@ public class Handbook {
 		headerLbl.setFont(new Font("Helvetica", Font.BOLD, 25));
 		headerLbl.setForeground(Color.WHITE);
 		
-		JButton backBtn = new JButton("Back");
+		JButton backBtn = new JButton("Back to Main Menu");
 		backBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				mainScreenCl.show(mainScreen, "main_menu_screen");
@@ -428,6 +434,7 @@ public class Handbook {
 		header.add(headerLbl, "gaptop 10"); //HARD-CODED VALUE
 		panel.add(header, "height 100, pushx, growx, wrap"); //HARD-CODED VALUE. Setting values for Header here.
 	}
+	
 	
 	
 	/**
@@ -472,6 +479,14 @@ public class Handbook {
 	}
 	
 	
+	
+	/**
+	 * A helper method that fills in the content, which contains a button component, for a content screen.
+	 * @param fileName Name of the file containing the screen's content
+	 * @param panel The JPanel representing the content screen (must be set with a MigLayout)
+	 * @param btnTxt The text to be put on the button
+	 * @param jumpToPgLbl The label for the screen that the button jumps to
+	 */
 	private void fillComponentContent(String fileName, JPanel panel, String btnTxt, final String jumpToPgLbl) {		
 		JTextPane content = new JTextPane();			
 		content.setEditable(false);
