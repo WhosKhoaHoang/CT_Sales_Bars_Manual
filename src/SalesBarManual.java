@@ -40,8 +40,10 @@ import net.miginfocom.swing.MigLayout;
 //TODO: Add Event Listeners for keyboard navigation
 //TODO: Change the program's desktop and dock (for Macs) icon
 
-public class Handbook {
+public class SalesBarManual {
 	
+	//java.net.URL url = ClassLoader.getSystemResource("images/ct_logo.png"); //Code for changing desktop icon?
+		
 	private JFrame frame = new JFrame();
 	private JPanel mainScreen = new JPanel();
 	
@@ -86,7 +88,7 @@ public class Handbook {
 	/**
 	 * Creates a new Handbook.
 	 */
-	public Handbook() {		
+	public SalesBarManual() {		
 		//FOR TESTING OUT BORDERS
 		Border blackline, raisedetched, loweredetched,
 	       raisedbevel, loweredbevel, empty;
